@@ -1,5 +1,12 @@
 import React from 'react'
 import type { Metadata } from 'next'
+import { cn } from '@/utilities/ui'
+import { GeistMono } from 'geist/font/mono'
+import { GeistSans } from 'geist/font/sans'
+import { Providers } from '@/providers'
+import { InitTheme } from '@/providers/Theme/InitTheme'
+
+import '../(frontend)/globals.css'
 
 export const metadata: Metadata = {
   title: 'Scorekeeper - Cowtown Showdown',
@@ -13,18 +20,16 @@ export default function ScorekeeperLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="bg-gray-100 min-h-screen">
-        <div className="min-h-screen">
-          <header className="bg-amber-900 text-white p-4">
-            <div className="container mx-auto">
-              <h1 className="text-2xl font-bold">Cowtown Showdown - Scorekeeper</h1>
-            </div>
-          </header>
-          <main className="container mx-auto p-4">
-            {children}
-          </main>
-        </div>
+    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+      <head>
+        <InitTheme />
+        <link href="/favicon.ico" rel="icon" sizes="32x32" />
+        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+      </head>
+      <body>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

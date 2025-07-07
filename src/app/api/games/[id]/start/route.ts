@@ -1,21 +1,21 @@
 /**
- * @description API endpoint for releasing claimed games
+ * @description API endpoint for starting games
  * @dependencies Payload CMS, Next.js App Router, authentication
- * @notes Allows scorekeepers to release games they've claimed
+ * @notes Allows scorekeepers to start games they have claimed
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { requireAuth } from '@/lib/auth'
+import { requireGameScorekeeper } from '@/lib/auth'
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Authenticate user
-    const user = await requireAuth(['admin', 'scorekeeper'])
+    // Authenticate user and verify game assignment
+    const user = await requireGameScorekeeper(request, params.id)
     const payload = await getPayload({ config })
     
     // Get the game
@@ -31,39 +31,33 @@ export async function POST(
       )
     }
 
-    // Check if user owns this game or is admin
-    if (user.role !== 'admin' && game.assignedScorekeeper?.id !== user.id) {
+    // Check if game can be started
+    if (game.status !== 'scheduled') {
       return NextResponse.json(
-        { message: 'You can only release games you have claimed' },
-        { status: 403 }
-      )
-    }
-
-    // Check if game can be released (not live or final)
-    if (game.status === 'live' || game.status === 'final') {
-      return NextResponse.json(
-        { message: 'Cannot release a live or completed game' },
+        { message: 'Only scheduled games can be started' },
         { status: 400 }
       )
     }
 
-    // Release the game
+    // Start the game
     const updatedGame = await payload.update({
       collection: 'games',
       id: params.id,
       data: {
-        assignedScorekeeper: null,
-        claimedAt: null,
+        status: 'live',
+        currentPeriod: 1,
+        periodTimeRemaining: game.periodLength * 60, // Convert minutes to seconds
+        startedAt: new Date().toISOString(),
       },
     })
 
     return NextResponse.json({
-      message: 'Game released successfully',
+      message: 'Game started successfully',
       game: updatedGame,
     })
 
   } catch (error) {
-    console.error('Error releasing game:', error)
+    console.error('Error starting game:', error)
     
     if (error instanceof Error) {
       if (error.message === 'Authentication required') {
@@ -75,6 +69,12 @@ export async function POST(
       if (error.message === 'Insufficient permissions') {
         return NextResponse.json(
           { message: 'Insufficient permissions' },
+          { status: 403 }
+        )
+      }
+      if (error.message === 'Not assigned to this game') {
+        return NextResponse.json(
+          { message: 'Not assigned to this game' },
           { status: 403 }
         )
       }

@@ -5,25 +5,28 @@
  */
 
 import { cookies, headers } from 'next/headers'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { User } from '@/payload-types'
 import { NextRequest } from 'next/server'
 
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    const payload = await getPayloadHMR({ config })
-    const cookieStore = cookies()
+    const payload = await getPayload({ config })
+    const cookieStore = await cookies()
     const token = cookieStore.get('payload-token')?.value
 
     if (!token) {
       return null
     }
 
+    // Create headers with the authorization token
+    const headersList = await headers()
+    const authHeaders = new Headers(headersList)
+    authHeaders.set('Authorization', `Bearer ${token}`)
+
     const { user } = await payload.auth({
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
+      headers: authHeaders,
     })
 
     return user || null
@@ -33,7 +36,7 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 }
 
-export async function requireAuth(allowedRoles: string[] = ['admin', 'scorekeeper']): Promise<User> {
+export async function requireAuth(allowedRoles: string[] = ['admin', 'scorekeeper', 'superAdmin']): Promise<User> {
   const user = await getCurrentUser()
   
   if (!user) {
@@ -66,7 +69,7 @@ export async function requireAuth(allowedRoles: string[] = ['admin', 'scorekeepe
  */
 export async function authenticateAPIRequest(request: NextRequest): Promise<User | null> {
   try {
-    const payload = await getPayloadHMR({ config })
+    const payload = await getPayload({ config })
     
     // Extract token from Authorization header
     const authHeader = request.headers.get('authorization')
@@ -81,9 +84,7 @@ export async function authenticateAPIRequest(request: NextRequest): Promise<User
 
     // Verify token with Payload
     const { user } = await payload.auth({
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
+      headers: request.headers,
     })
     
     return user || null
@@ -98,7 +99,7 @@ export async function authenticateAPIRequest(request: NextRequest): Promise<User
  */
 export async function requireAPIAuth(
   request: NextRequest,
-  allowedRoles: string[] = ['admin', 'scorekeeper']
+  allowedRoles: string[] = ['admin', 'scorekeeper', 'superAdmin']
 ): Promise<User> {
   const user = await authenticateAPIRequest(request)
   
@@ -120,16 +121,16 @@ export async function requireGameScorekeeper(
   request: NextRequest,
   gameId: string
 ): Promise<User> {
-  const user = await requireAPIAuth(request, ['admin', 'scorekeeper'])
+  const user = await requireAPIAuth(request, ['admin', 'scorekeeper', 'superAdmin'])
   
-  // Admins can access any game
-  if (user.role === 'admin') {
+  // Admins and superAdmins can access any game
+  if (user.role === 'admin' || user.role === 'superAdmin') {
     return user
   }
   
   // Scorekeepers need to be assigned to the specific game
   try {
-    const payload = await getPayloadHMR({ config })
+    const payload = await getPayload({ config })
     const game = await payload.findByID({
       collection: 'games',
       id: gameId,

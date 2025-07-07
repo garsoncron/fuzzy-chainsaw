@@ -1,7 +1,7 @@
 /**
- * @description API endpoint for releasing claimed games
+ * @description API endpoint for claiming games by scorekeepers
  * @dependencies Payload CMS, Next.js App Router, authentication
- * @notes Allows scorekeepers to release games they've claimed
+ * @notes Allows scorekeepers to claim games for scoring
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -31,39 +31,61 @@ export async function POST(
       )
     }
 
-    // Check if user owns this game or is admin
-    if (user.role !== 'admin' && game.assignedScorekeeper?.id !== user.id) {
+    // Check if game is already claimed
+    if (game.assignedScorekeeper) {
       return NextResponse.json(
-        { message: 'You can only release games you have claimed' },
-        { status: 403 }
+        { message: 'Game is already claimed by another scorekeeper' },
+        { status: 409 }
       )
     }
 
-    // Check if game can be released (not live or final)
-    if (game.status === 'live' || game.status === 'final') {
+    // Check if game can be claimed (only scheduled games)
+    if (game.status !== 'scheduled') {
       return NextResponse.json(
-        { message: 'Cannot release a live or completed game' },
+        { message: 'Only scheduled games can be claimed' },
         { status: 400 }
       )
     }
 
-    // Release the game
+    // Check if user already has a claimed game (only one at a time)
+    if (user.role === 'scorekeeper') {
+      const existingClaim = await payload.find({
+        collection: 'games',
+        where: {
+          assignedScorekeeper: {
+            equals: user.id,
+          },
+          status: {
+            not_equals: 'final',
+          },
+        },
+      })
+
+      if (existingClaim.docs.length > 0) {
+        return NextResponse.json(
+          { message: 'You already have a claimed game. Please release it first.' },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Claim the game
     const updatedGame = await payload.update({
       collection: 'games',
       id: params.id,
       data: {
-        assignedScorekeeper: null,
-        claimedAt: null,
+        assignedScorekeeper: user.id,
+        claimedAt: new Date().toISOString(),
       },
     })
 
     return NextResponse.json({
-      message: 'Game released successfully',
+      message: 'Game claimed successfully',
       game: updatedGame,
     })
 
   } catch (error) {
-    console.error('Error releasing game:', error)
+    console.error('Error claiming game:', error)
     
     if (error instanceof Error) {
       if (error.message === 'Authentication required') {

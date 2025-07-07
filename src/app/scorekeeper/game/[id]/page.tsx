@@ -6,7 +6,7 @@
  */
 
 import { redirect, notFound } from 'next/navigation'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getPayload } from 'payload'
 import config from '@payload-config'
 import { getCurrentUser } from '@/lib/auth'
 import { ScoringInterface } from '@/components/scorekeeper/ScoringInterface'
@@ -18,11 +18,11 @@ interface PageProps {
 }
 
 export default async function GameScoringPage({ params }: PageProps) {
-  const payload = await getPayloadHMR({ config })
+  const payload = await getPayload({ config })
   const user = await getCurrentUser()
 
   // Check authentication
-  if (!user || (user.role !== 'scorekeeper' && user.role !== 'admin')) {
+  if (!user || (user.role !== 'scorekeeper' && user.role !== 'admin' && user.role !== 'superAdmin')) {
     redirect('/admin/login')
   }
 

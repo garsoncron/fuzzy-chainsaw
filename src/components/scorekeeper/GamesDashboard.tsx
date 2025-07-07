@@ -7,7 +7,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -30,6 +30,7 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [claimDialogOpen, setClaimDialogOpen] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   // Filter games based on search and filter criteria
@@ -67,15 +68,15 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-blue-100 text-blue-800 border border-blue-200'
       case 'live':
-        return 'bg-green-100 text-green-800'
+        return 'bg-green-100 text-green-800 border border-green-200 pulse-live'
       case 'final':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-gray-100 text-gray-800 border border-gray-200'
       case 'overtime':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-orange-100 text-orange-800 border border-orange-200 pulse-live'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-gray-800 border border-gray-200'
     }
   }
 
@@ -103,57 +104,83 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-          <Select value={selectedDay} onValueChange={setSelectedDay}>
-            <SelectTrigger className="w-full sm:w-32">
-              <SelectValue placeholder="All Days" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Days</SelectItem>
-              <SelectItem value="1">Day 1</SelectItem>
-              <SelectItem value="2">Day 2</SelectItem>
-              <SelectItem value="3">Day 3</SelectItem>
-            </SelectContent>
-          </Select>
+      <div className="bg-amber-50/50 dark:bg-gray-700/50 rounded-lg p-4 border-2 border-primary-brown/10">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <Select value={selectedDay} onValueChange={setSelectedDay}>
+              <SelectTrigger className="w-full sm:w-32 border-primary-brown/30 focus:border-golden focus:ring-golden/30">
+                <SelectValue placeholder="All Days" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Days</SelectItem>
+                <SelectItem value="1">📅 Day 1</SelectItem>
+                <SelectItem value="2">📅 Day 2</SelectItem>
+                <SelectItem value="3">📅 Day 3</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="scheduled">Scheduled</SelectItem>
-              <SelectItem value="live">Live</SelectItem>
-              <SelectItem value="final">Final</SelectItem>
-              <SelectItem value="overtime">Overtime</SelectItem>
-            </SelectContent>
-          </Select>
+            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+              <SelectTrigger className="w-full sm:w-40 border-primary-brown/30 focus:border-golden focus:ring-golden/30">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="scheduled">📅 Scheduled</SelectItem>
+                <SelectItem value="live">🔴 Live</SelectItem>
+                <SelectItem value="final">✅ Final</SelectItem>
+                <SelectItem value="overtime">⚡ Overtime</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Input
+            placeholder="🔍 Search teams or game numbers..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full md:w-64 border-primary-brown/30 focus:border-golden focus:ring-golden/30"
+          />
         </div>
-
-        <Input
-          placeholder="Search games..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-64"
-        />
       </div>
 
       {/* Games Grid */}
-      <div className="grid gap-4">
-        {filteredGames.map((game) => (
-          <Card key={game.id} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <span className="text-xl">{getStatusIcon(game.status)}</span>
-                  Game {game.gameNumber}
-                </CardTitle>
-                <Badge className={getStatusColor(game.status)}>
-                  {game.status.charAt(0).toUpperCase() + game.status.slice(1)}
-                </Badge>
-              </div>
-            </CardHeader>
+      <div className="grid gap-6">
+        {filteredGames.length === 0 ? (
+          // Empty State
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">🤠</div>
+            <h3 className="text-2xl font-bold text-primary-brown mb-2">No Games Found, Partner!</h3>
+            <p className="text-muted-foreground text-lg mb-6">
+              {games.length === 0 
+                ? "Looks like the tournament hasn't been seeded yet. Head to the saloon (admin panel) to set up some games!"
+                : "Try adjusting your filters or search terms to find the games you're looking for."
+              }
+            </p>
+            {games.length === 0 && (
+              <Button 
+                onClick={() => window.open('/seed', '_blank')} 
+                className="bg-primary-brown hover:bg-dark-brown text-white"
+              >
+                🌱 Seed Tournament Data
+              </Button>
+            )}
+          </div>
+        ) : (
+          filteredGames.map((game) => (
+            <Card key={game.id} className="hover:shadow-lg transition-all duration-300 border-2 border-primary-brown/20 hover:border-golden/50 bg-gradient-to-r from-white to-amber-50/30 dark:from-gray-800 dark:to-gray-700">
+              <CardHeader className="pb-3 bg-gradient-to-r from-primary-brown/5 to-golden/5 border-b border-primary-brown/10">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl flex items-center gap-3">
+                    <span className="text-2xl">{getStatusIcon(game.status)}</span>
+                    <span className="font-bold text-primary-brown">Game {game.gameNumber}</span>
+                    {game.gameType === 'medal' && (
+                      <span className="text-golden text-sm">🏆 Medal Game</span>
+                    )}
+                  </CardTitle>
+                  <Badge className={`${getStatusColor(game.status)} px-3 py-1 text-sm font-semibold rounded-full`}>
+                    {game.status.charAt(0).toUpperCase() + game.status.slice(1)}
+                  </Badge>
+                </div>
+              </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {/* Teams */}
@@ -194,49 +221,43 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-3 pt-4">
                   {canClaimGame(game) && (
                     <Button
                       onClick={() => handleClaimGame(game)}
-                      className="flex-1 h-12 text-base"
-                      variant="outline"
+                      className="flex-1 h-12 text-base bg-primary-brown hover:bg-dark-brown text-white shadow-md hover:shadow-lg transition-all duration-200"
+                      variant="default"
                     >
-                      Claim Game
+                      🤝 Claim Game
                     </Button>
                   )}
 
                   {isUserAssigned(game) && (
                     <Button
                       onClick={() => handleManageGame(game)}
-                      className="flex-1 h-12 text-base"
+                      className="flex-1 h-12 text-base bg-golden hover:bg-golden/90 text-dark-brown font-bold shadow-md hover:shadow-lg transition-all duration-200"
                       variant="default"
                     >
-                      Manage Game →
+                      🎮 Manage Game →
                     </Button>
                   )}
 
                   {game.assignedScorekeeper && !isUserAssigned(game) && (
                     <Button
                       disabled
-                      className="flex-1 h-12 text-base"
+                      className="flex-1 h-12 text-base opacity-50 cursor-not-allowed"
                       variant="outline"
                     >
-                      Claimed by {game.assignedScorekeeper.name || 'Other User'}
+                      🔒 Claimed by {game.assignedScorekeeper.name || 'Other User'}
                     </Button>
                   )}
                 </div>
               </div>
             </CardContent>
           </Card>
-        ))}
+        ))
+        )}
       </div>
-
-      {/* No Games Message */}
-      {filteredGames.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-500 text-lg">No games found matching your criteria.</p>
-        </div>
-      )}
 
       {/* Claim Game Dialog */}
       <GameClaimDialog
