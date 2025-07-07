@@ -10,12 +10,24 @@ import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
-import { Users } from './collections/Users'
+import { Users } from './collections/Users' // Using the enhanced Users collection with role-based access
+
+// Tournament Collections
+import { Teams } from './collections/Teams'
+import { Players } from './collections/Players'
+import { Games } from './collections/Games'
+import { Goals } from './collections/Goals'
+import { Penalties } from './collections/Penalties'
+import { Faceoffs } from './collections/Faceoffs'
+import { Shots } from './collections/Shots'
+import { LooseBalls } from './collections/LooseBalls'
+import { AuditLogs } from './collections/AuditLogs'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { seed } from './endpoints/seed'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -64,7 +76,25 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [
+    // Core CMS Collections
+    Pages, 
+    Posts, 
+    Media, 
+    Categories, 
+    Users,
+    
+    // Tournament Collections
+    Teams,
+    Players,
+    Games,
+    Goals,
+    Penalties,
+    Faceoffs,
+    Shots,
+    LooseBalls,
+    AuditLogs,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
@@ -75,6 +105,13 @@ export default buildConfig({
   sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+  onInit: async (payload) => {
+    if (process.env.PAYLOAD_SEED === 'true') {
+      const req = { user: { id: 'seed' } } as any
+      await seed({ payload, req })
+      process.exit(0)
+    }
   },
   jobs: {
     access: {

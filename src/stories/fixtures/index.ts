@@ -1,0 +1,362 @@
+// Mock data for Storybook stories
+
+export const mockTeams = [
+  {
+    id: 'team-1',
+    name: 'Calgary Bears',
+    slug: 'calgary-bears',
+    city: 'Calgary',
+    province: 'Alberta',
+    primaryColor: '#8B4513',
+    secondaryColor: '#CD853F',
+    logo: {
+      id: 'logo-1',
+      url: '/images/teams/calgary-bears.png',
+      alt: 'Calgary Bears Logo',
+      width: 100,
+      height: 100,
+    },
+    captain: {
+      name: 'Connor McDavid',
+      email: 'connor@calgarybears.com',
+      phone: '403-555-0101',
+    },
+  },
+  {
+    id: 'team-2',
+    name: 'Edmonton Storm',
+    slug: 'edmonton-storm',
+    city: 'Edmonton',
+    province: 'Alberta',
+    primaryColor: '#1E3A8A',
+    secondaryColor: '#3B82F6',
+    logo: {
+      id: 'logo-2',
+      url: '/images/teams/edmonton-storm.png',
+      alt: 'Edmonton Storm Logo',
+      width: 100,
+      height: 100,
+    },
+    captain: {
+      name: 'Leon Draisaitl',
+      email: 'leon@edmontonstorm.com',
+      phone: '780-555-0202',
+    },
+  },
+  {
+    id: 'team-3',
+    name: 'Vancouver Thunder',
+    slug: 'vancouver-thunder',
+    city: 'Vancouver',
+    province: 'British Columbia',
+    primaryColor: '#059669',
+    secondaryColor: '#10B981',
+    logo: {
+      id: 'logo-3',
+      url: '/images/teams/vancouver-thunder.png',
+      alt: 'Vancouver Thunder Logo',
+      width: 100,
+      height: 100,
+    },
+    captain: {
+      name: 'Quinn Hughes',
+      email: 'quinn@vancouverthunder.com',
+      phone: '604-555-0303',
+    },
+  },
+]
+
+export const mockPlayers = [
+  {
+    id: 'player-1',
+    firstName: 'Connor',
+    lastName: 'McDavid',
+    displayName: 'Connor McDavid',
+    jerseyNumber: 97,
+    team: mockTeams[0],
+    primaryPosition: 'offence',
+    secondaryPosition: 'transition',
+    handedness: 'left',
+    playerType: 'runner',
+  },
+  {
+    id: 'player-2',
+    firstName: 'Stuart',
+    lastName: 'Skinner',
+    displayName: 'Stuart Skinner',
+    jerseyNumber: 74,
+    team: mockTeams[0],
+    primaryPosition: 'goalie',
+    handedness: 'left',
+    playerType: 'goalie',
+  },
+  {
+    id: 'player-3',
+    firstName: 'Leon',
+    lastName: 'Draisaitl',
+    displayName: 'Leon Draisaitl',
+    jerseyNumber: 29,
+    team: mockTeams[1],
+    primaryPosition: 'offence',
+    handedness: 'left',
+    playerType: 'runner',
+  },
+  {
+    id: 'player-4',
+    firstName: 'Mike',
+    lastName: 'Smith',
+    displayName: 'Mike Smith',
+    jerseyNumber: 41,
+    team: mockTeams[1],
+    primaryPosition: 'goalie',
+    handedness: 'left',
+    playerType: 'goalie',
+  },
+]
+
+export const mockGames = [
+  {
+    id: 'game-1',
+    gameNumber: '1',
+    gameType: 'pool' as const,
+    day: 1,
+    scheduledTime: '2024-07-15T10:00:00Z',
+    status: 'live' as const,
+    homeTeam: mockTeams[0],
+    awayTeam: mockTeams[1],
+    homeScore: 8,
+    awayScore: 5,
+    homeStartingGoalie: mockPlayers[1],
+    awayStartingGoalie: mockPlayers[3],
+    homeCurrentGoalie: mockPlayers[1],
+    awayCurrentGoalie: mockPlayers[3],
+    currentPeriod: 2,
+    periodTimeRemaining: 420, // 7:00
+    periodLength: 720, // 12 minutes
+    gamePoints: {
+      home: 3.5,
+      away: 1.5,
+    },
+    periodPoints: {
+      period1: { home: 1, away: 0 },
+      period2: { home: 0.5, away: 0.5 },
+      period3: { home: 0, away: 0 },
+    },
+    finalGamePoints: { home: 2, away: 0 },
+    overtimeAllowed: false,
+    youtubeUrl: 'https://youtube.com/watch?v=example123',
+    threeStars: {
+      first: mockPlayers[0],
+      second: mockPlayers[2],
+      third: mockPlayers[1],
+    },
+  },
+  {
+    id: 'game-2',
+    gameNumber: '2',
+    gameType: 'pool' as const,
+    day: 1,
+    scheduledTime: '2024-07-15T11:00:00Z',
+    status: 'scheduled' as const,
+    homeTeam: mockTeams[2],
+    awayTeam: mockTeams[0],
+    homeScore: 0,
+    awayScore: 0,
+    homeStartingGoalie: null,
+    awayStartingGoalie: null,
+    homeCurrentGoalie: null,
+    awayCurrentGoalie: null,
+    currentPeriod: 0,
+    periodTimeRemaining: 720,
+    periodLength: 720,
+    gamePoints: {
+      home: 0,
+      away: 0,
+    },
+    periodPoints: {
+      period1: { home: 0, away: 0 },
+      period2: { home: 0, away: 0 },
+      period3: { home: 0, away: 0 },
+    },
+    finalGamePoints: { home: 0, away: 0 },
+    overtimeAllowed: false,
+    youtubeUrl: null,
+    threeStars: null,
+  },
+  {
+    id: 'game-3',
+    gameNumber: '21',
+    gameType: 'medal' as const,
+    day: 3,
+    scheduledTime: '2024-07-17T14:00:00Z',
+    status: 'final' as const,
+    homeTeam: mockTeams[0],
+    awayTeam: mockTeams[1],
+    homeScore: 12,
+    awayScore: 9,
+    homeStartingGoalie: mockPlayers[1],
+    awayStartingGoalie: mockPlayers[3],
+    homeCurrentGoalie: mockPlayers[1],
+    awayCurrentGoalie: mockPlayers[3],
+    currentPeriod: 3,
+    periodTimeRemaining: 0,
+    periodLength: 900, // 15 minutes for medal games
+    gamePoints: {
+      home: 5,
+      away: 0,
+    },
+    periodPoints: {
+      period1: { home: 1, away: 0 },
+      period2: { home: 1, away: 0 },
+      period3: { home: 1, away: 0 },
+    },
+    finalGamePoints: { home: 2, away: 0 },
+    overtimeAllowed: true,
+    youtubeUrl: 'https://youtube.com/watch?v=championship',
+    threeStars: {
+      first: mockPlayers[0],
+      second: mockPlayers[2],
+      third: mockPlayers[1],
+    },
+  },
+]
+
+export const mockGoals = [
+  {
+    id: 'goal-1',
+    game: mockGames[0],
+    scorer: mockPlayers[0],
+    assists: [mockPlayers[2]],
+    goalType: 'power_play' as const,
+    team: 'home' as const,
+    period: 1,
+    periodTime: 480,
+    description: 'Power play goal from the slot',
+    createdAt: '2024-07-15T10:15:00Z',
+  },
+  {
+    id: 'goal-2',
+    game: mockGames[0],
+    scorer: mockPlayers[2],
+    assists: [],
+    goalType: 'even_strength' as const,
+    team: 'away' as const,
+    period: 1,
+    periodTime: 360,
+    description: 'Unassisted goal on breakaway',
+    createdAt: '2024-07-15T10:18:00Z',
+  },
+]
+
+export const mockPenalties = [
+  {
+    id: 'penalty-1',
+    game: mockGames[0],
+    player: mockPlayers[2],
+    infraction: 'slashing',
+    team: 'away' as const,
+    period: 1,
+    periodTime: 520,
+    duration: '2min',
+    description: 'Slashing on the hands',
+    coincidental: false,
+    delayed: false,
+    createdAt: '2024-07-15T10:14:00Z',
+  },
+]
+
+export const mockStandings = [
+  {
+    team: mockTeams[0],
+    gamesPlayed: 5,
+    wins: 4,
+    losses: 1,
+    ties: 0,
+    tournamentPoints: 18.5,
+    goalsFor: 45,
+    goalsAgainst: 28,
+    goalDifferential: 17,
+    goalAverage: 0.616,
+    periodWins: 10,
+    periodLosses: 4,
+    periodTies: 1,
+    penaltyMinutes: 24,
+    rank: 1,
+  },
+  {
+    team: mockTeams[1],
+    gamesPlayed: 5,
+    wins: 3,
+    losses: 2,
+    ties: 0,
+    tournamentPoints: 15.0,
+    goalsFor: 38,
+    goalsAgainst: 32,
+    goalDifferential: 6,
+    goalAverage: 0.543,
+    periodWins: 9,
+    periodLosses: 6,
+    periodTies: 0,
+    penaltyMinutes: 18,
+    rank: 2,
+  },
+  {
+    team: mockTeams[2],
+    gamesPlayed: 5,
+    wins: 1,
+    losses: 4,
+    ties: 0,
+    tournamentPoints: 6.5,
+    goalsFor: 22,
+    goalsAgainst: 41,
+    goalDifferential: -19,
+    goalAverage: 0.349,
+    periodWins: 2,
+    periodLosses: 12,
+    periodTies: 1,
+    penaltyMinutes: 36,
+    rank: 3,
+  },
+]
+
+export const mockUser = {
+  id: 'user-1',
+  email: 'scorekeeper@cowtown.com',
+  firstName: 'John',
+  lastName: 'Scorekeeper',
+  roles: ['scorekeeper'],
+  collection: 'users',
+  createdAt: '2024-01-01T00:00:00Z',
+  updatedAt: '2024-01-01T00:00:00Z',
+}
+
+// Rich text content examples
+export const mockRichTextContent = [
+  {
+    type: 'paragraph',
+    children: [
+      {
+        text: 'Welcome to the Cowtown Showdown, Calgary\'s premier box lacrosse tournament featuring 8 teams competing over 3 days.',
+      },
+    ],
+  },
+  {
+    type: 'paragraph',
+    children: [
+      {
+        text: 'Follow along with live scoring and real-time updates throughout the tournament.',
+      },
+    ],
+  },
+]
+
+export const mockBannerContent = [
+  {
+    type: 'paragraph',
+    children: [
+      {
+        text: '🚨 Tournament Update: Game 5 has been delayed by 15 minutes due to equipment setup.',
+      },
+    ],
+  },
+]

@@ -4,8 +4,30 @@ import React from 'react'
 
 import type { Header } from '@/payload-types'
 
-export async function Header() {
+interface HeaderProps {
+  liveGamesCount?: number
+  nextGameTime?: string
+  showLiveIndicator?: boolean
+}
+
+/**
+ * @description Server component wrapper for header with CMS data fetching
+ * @dependencies getCachedGlobal utility, HeaderClient component
+ * @notes Fetches header navigation data from Payload CMS global
+ */
+export async function Header({ 
+  liveGamesCount, 
+  nextGameTime, 
+  showLiveIndicator 
+}: HeaderProps = {}) {
   const headerData: Header = await getCachedGlobal('header', 1)()
 
-  return <HeaderClient data={headerData} />
+  return (
+    <HeaderClient 
+      data={headerData} 
+      liveGamesCount={liveGamesCount}
+      nextGameTime={nextGameTime}
+      showLiveIndicator={showLiveIndicator}
+    />
+  )
 }

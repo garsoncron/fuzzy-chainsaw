@@ -159,8 +159,8 @@ This is a **Payload CMS + Next.js 15** tournament website using:
 - `src/collections/Faceoffs/` - Faceoff statistics
 - `src/collections/Shots/` - Shot tracking for goalies
 - `src/collections/LooseBalls/` - Loose ball recoveries
-- `src/collections/RuleViolations/` - Rule violations (shot clock, over and back, etc.)
-- `src/collections/TeamStaff/` - Coaches, trainers, managers
+- `src/collections/Users/` - ✅ Enhanced with role-based authentication
+- `src/collections/AuditLogs/` - ✅ Security and compliance audit trail
 
 **Components**
 
@@ -168,6 +168,22 @@ This is a **Payload CMS + Next.js 15** tournament website using:
 - `src/components/GameCard/` - Game display cards
 - `src/components/BoxScore/` - Detailed game statistics
 - `src/components/ThreeStars/` - Post-game recognition
+- `src/components/Auth/` - ✅ Authentication and security components
+  - `LoginForm.tsx` - Tournament login interface
+  - `SessionTimer.tsx` - Scorekeeper session countdown
+  - `GameClaimManager.tsx` - Game claiming interface
+- `src/components/scorekeeper/` - ✅ **COMPLETED** Comprehensive scorekeeper interface
+  - `GamesDashboard.tsx` - Game listing and claiming interface
+  - `ScoringInterface.tsx` - Main live game management interface
+  - `ScoreBoard.tsx` - Real-time score display
+  - `Timer.tsx` - Period timer with start/stop/reset controls
+  - `StatButtons.tsx` - Statistics entry buttons (goals, penalties, etc.)
+  - `PlayerSelectDialog.tsx` - Player selection for stat attribution
+  - `PenaltyDialog.tsx` - RMLL penalty system integration
+  - `GameLog.tsx` - Chronological game event history
+  - `PeriodControls.tsx` - Period management and game flow
+  - `ThreeStarsDialog.tsx` - Post-game player recognition
+  - `GameClaimDialog.tsx` - Game claiming confirmation
 
 ### Tournament Data Model
 
@@ -460,6 +476,16 @@ PAYLOAD_SECRET=            # Payload secret key
 NEXT_PUBLIC_SERVER_URL=    # Server URL for SSE
 SCOREKEEPER_SESSION_TIMEOUT=14400  # 4 hours
 REALTIME_UPDATE_INTERVAL=1000      # 1 second
+
+# Authentication & Security
+JWT_SECRET=                # JWT signing secret
+CSRF_SECRET=               # CSRF protection secret
+ADMIN_SESSION_TIMEOUT=86400        # 24 hours for admins
+AUDIT_LOG_RETENTION_DAYS=365       # Audit log retention
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000        # 15 minutes
+RATE_LIMIT_MAX_REQUESTS=100        # Default max requests
 ```
 
 ## Tournament Configuration

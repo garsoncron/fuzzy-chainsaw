@@ -9,6 +9,7 @@ import { imageHero1 } from './image-hero-1'
 import { post1 } from './post-1'
 import { post2 } from './post-2'
 import { post3 } from './post-3'
+import { seedTournament } from './tournament'
 
 const collections: CollectionSlug[] = [
   'categories',
@@ -18,6 +19,14 @@ const collections: CollectionSlug[] = [
   'forms',
   'form-submissions',
   'search',
+  'teams',
+  'players',
+  'games',
+  'goals',
+  'penalties',
+  'shots',
+  'faceoffs',
+  'loose-balls',
 ]
 const globals: GlobalSlug[] = ['header', 'footer']
 
@@ -338,6 +347,9 @@ export const seed = async ({
       },
     }),
   ])
+
+  // Seed tournament data
+  await seedTournament({ payload, req })
 
   payload.logger.info('Seeded database successfully!')
 }

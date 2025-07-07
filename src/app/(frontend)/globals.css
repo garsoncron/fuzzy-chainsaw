@@ -47,6 +47,21 @@
     --success: 196 52% 74%;
     --warning: 34 89% 85%;
     --error: 10 100% 86%;
+
+    /* Western Gothic Tournament Colors */
+    --primary-brown: 28 57% 37%; /* #934f25 */
+    --dark-brown: 26 49% 25%; /* #5e2713 */
+    --golden: 46 69% 58%; /* #d6ac4d */
+    --power-play: 204 100% 50%; /* #2196f3 */
+    --penalty-kill: 16 100% 55%; /* #ff5722 */
+    --live-indicator: 120 100% 50%; /* #00ff00 */
+    --final-game: 0 0% 60%; /* #999999 */
+    
+    /* Tournament Status Colors */
+    --game-scheduled: 210 40% 90%;
+    --game-live: 120 100% 85%;
+    --game-final: 0 0% 85%;
+    --game-overtime: 39 100% 85%;
   }
 
   [data-theme='dark'] {
@@ -81,6 +96,21 @@
     --success: 196 100% 14%;
     --warning: 34 51% 25%;
     --error: 10 39% 43%;
+
+    /* Western Gothic Tournament Colors - Dark */
+    --primary-brown: 28 57% 47%; /* lighter brown for dark theme */
+    --dark-brown: 26 49% 15%; /* darker brown for dark theme */
+    --golden: 46 69% 68%; /* brighter gold for dark theme */
+    --power-play: 204 100% 60%; /* brighter blue for dark theme */
+    --penalty-kill: 16 100% 65%; /* brighter red for dark theme */
+    --live-indicator: 120 100% 60%; /* brighter green for dark theme */
+    --final-game: 0 0% 70%; /* lighter gray for dark theme */
+    
+    /* Tournament Status Colors - Dark */
+    --game-scheduled: 210 40% 20%;
+    --game-live: 120 100% 15%;
+    --game-final: 0 0% 15%;
+    --game-overtime: 39 100% 15%;
   }
 }
 
@@ -100,4 +130,96 @@ html {
 html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
+}
+
+/* Tournament Typography */
+@import url('https://fonts.googleapis.com/css2?family=Rye&family=Smokum&display=swap');
+
+.font-western {
+  font-family: 'Rye', 'Smokum', serif;
+}
+
+/* Tournament Utility Classes */
+@layer utilities {
+  .text-primary-brown {
+    color: hsl(var(--primary-brown));
+  }
+  
+  .text-dark-brown {
+    color: hsl(var(--dark-brown));
+  }
+  
+  .text-golden {
+    color: hsl(var(--golden));
+  }
+  
+  .bg-primary-brown {
+    background-color: hsl(var(--primary-brown));
+  }
+  
+  .bg-dark-brown {
+    background-color: hsl(var(--dark-brown));
+  }
+  
+  .bg-golden {
+    background-color: hsl(var(--golden));
+  }
+  
+  .bg-game-scheduled {
+    background-color: hsl(var(--game-scheduled));
+  }
+  
+  .bg-game-live {
+    background-color: hsl(var(--game-live));
+  }
+  
+  .bg-game-final {
+    background-color: hsl(var(--game-final));
+  }
+  
+  .bg-game-overtime {
+    background-color: hsl(var(--game-overtime));
+  }
+  
+  .text-power-play {
+    color: hsl(var(--power-play));
+  }
+  
+  .text-penalty-kill {
+    color: hsl(var(--penalty-kill));
+  }
+  
+  .text-live-indicator {
+    color: hsl(var(--live-indicator));
+  }
+  
+  .text-final-game {
+    color: hsl(var(--final-game));
+  }
+  
+  .text-game-overtime {
+    color: hsl(var(--penalty-kill));
+  }
+  
+  .border-primary-brown {
+    border-color: hsl(var(--primary-brown));
+  }
+  
+  .border-golden {
+    border-color: hsl(var(--golden));
+  }
+  
+  /* Tournament-specific animations */
+  .pulse-live {
+    animation: pulse-live 2s infinite;
+  }
+  
+  @keyframes pulse-live {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
 }

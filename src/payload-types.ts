@@ -72,6 +72,15 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    teams: Team;
+    players: Player;
+    games: Game;
+    goals: Goal;
+    penalties: Penalty;
+    faceoffs: Faceoff;
+    shots: Shot;
+    'loose-balls': LooseBall;
+    'audit-logs': AuditLog;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -88,6 +97,15 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    teams: TeamsSelect<false> | TeamsSelect<true>;
+    players: PlayersSelect<false> | PlayersSelect<true>;
+    games: GamesSelect<false> | GamesSelect<true>;
+    goals: GoalsSelect<false> | GoalsSelect<true>;
+    penalties: PenaltiesSelect<false> | PenaltiesSelect<true>;
+    faceoffs: FaceoffsSelect<false> | FaceoffsSelect<true>;
+    shots: ShotsSelect<false> | ShotsSelect<true>;
+    'loose-balls': LooseBallsSelect<false> | LooseBallsSelect<true>;
+    'audit-logs': AuditLogsSelect<false> | AuditLogsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -98,7 +116,7 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   globals: {
     header: Header;
@@ -146,7 +164,7 @@ export interface UserAuthOperations {
  * via the `definition` "pages".
  */
 export interface Page {
-  id: string;
+  id: number;
   title: string;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
@@ -173,11 +191,11 @@ export interface Page {
             reference?:
               | ({
                   relationTo: 'pages';
-                  value: string | Page;
+                  value: number | Page;
                 } | null)
               | ({
                   relationTo: 'posts';
-                  value: string | Post;
+                  value: number | Post;
                 } | null);
             url?: string | null;
             label: string;
@@ -189,15 +207,23 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
-    media?: (string | null) | Media;
+    media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | TournamentInfoBlock
+    | RulesBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
@@ -212,9 +238,9 @@ export interface Page {
  * via the `definition` "posts".
  */
 export interface Post {
-  id: string;
+  id: number;
   title: string;
-  heroImage?: (string | null) | Media;
+  heroImage?: (number | null) | Media;
   content: {
     root: {
       type: string;
@@ -230,18 +256,18 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (string | Post)[] | null;
-  categories?: (string | Category)[] | null;
+  relatedPosts?: (number | Post)[] | null;
+  categories?: (number | Category)[] | null;
   meta?: {
     title?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
-  authors?: (string | User)[] | null;
+  authors?: (number | User)[] | null;
   populatedAuthors?:
     | {
         id?: string | null;
@@ -259,7 +285,7 @@ export interface Post {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt?: string | null;
   caption?: {
     root: {
@@ -351,14 +377,14 @@ export interface Media {
  * via the `definition` "categories".
  */
 export interface Category {
-  id: string;
+  id: number;
   title: string;
   slug?: string | null;
   slugLock?: boolean | null;
-  parent?: (string | null) | Category;
+  parent?: (number | null) | Category;
   breadcrumbs?:
     | {
-        doc?: (string | null) | Category;
+        doc?: (number | null) | Category;
         url?: string | null;
         label?: string | null;
         id?: string | null;
@@ -372,8 +398,11 @@ export interface Category {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
-  name?: string | null;
+  id: number;
+  role: 'superAdmin' | 'admin' | 'scorekeeper';
+  firstName: string;
+  lastName: string;
+  password?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -390,7 +419,6 @@ export interface User {
         expiresAt: string;
       }[]
     | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -420,11 +448,11 @@ export interface CallToActionBlock {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -470,11 +498,11 @@ export interface ContentBlock {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -495,7 +523,7 @@ export interface ContentBlock {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  media: string | Media;
+  media: number | Media;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -522,12 +550,12 @@ export interface ArchiveBlock {
   } | null;
   populateBy?: ('collection' | 'selection') | null;
   relationTo?: 'posts' | null;
-  categories?: (string | Category)[] | null;
+  categories?: (number | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
     | {
         relationTo: 'posts';
-        value: string | Post;
+        value: number | Post;
       }[]
     | null;
   id?: string | null;
@@ -539,7 +567,7 @@ export interface ArchiveBlock {
  * via the `definition` "FormBlock".
  */
 export interface FormBlock {
-  form: string | Form;
+  form: number | Form;
   enableIntro?: boolean | null;
   introContent?: {
     root: {
@@ -565,7 +593,7 @@ export interface FormBlock {
  * via the `definition` "forms".
  */
 export interface Form {
-  id: string;
+  id: number;
   title: string;
   fields?:
     | (
@@ -736,10 +764,628 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TournamentInfoBlock".
+ */
+export interface TournamentInfoBlock {
+  title: string;
+  description: string;
+  highlights?:
+    | {
+        icon?: ('trophy' | 'calendar' | 'users' | 'mapPin' | 'clock' | 'star') | null;
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  stats?:
+    | {
+        /**
+         * e.g., "8", "22", "3", etc.
+         */
+        number: string;
+        /**
+         * e.g., "Teams", "Games", "Days", etc.
+         */
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tournamentInfo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RulesBlock".
+ */
+export interface RulesBlock {
+  title: string;
+  /**
+   * Optional subtitle or description
+   */
+  subtitle?: string | null;
+  ruleCategories?:
+    | {
+        /**
+         * e.g., "Game Format", "Scoring", "Penalties", etc.
+         */
+        categoryTitle: string;
+        rules?:
+          | {
+              rule: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Any additional notes or clarifications
+   */
+  additionalInfo?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'rules';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teams".
+ */
+export interface Team {
+  id: number;
+  /**
+   * Full team name (e.g., "Calgary Bears")
+   */
+  name: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  /**
+   * Upload team logo for branding
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Hex color code (e.g., #934F25)
+   */
+  primaryColor?: string | null;
+  /**
+   * Secondary hex color code (e.g., #D6AC4D)
+   */
+  secondaryColor?: string | null;
+  /**
+   * Team city (e.g., "Calgary")
+   */
+  city: string;
+  /**
+   * Team province (e.g., "Alberta")
+   */
+  province: string;
+  /**
+   * Primary contact for team communication
+   */
+  captain: {
+    name: string;
+    email: string;
+    /**
+     * Phone number for tournament communication
+     */
+    phone: string;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "players".
+ */
+export interface Player {
+  id: number;
+  firstName: string;
+  lastName: string;
+  displayName?: string | null;
+  /**
+   * Player jersey number (0-99)
+   */
+  jerseyNumber: number;
+  /**
+   * The team this player belongs to
+   */
+  team: number | Team;
+  /**
+   * Player primary position
+   */
+  primaryPosition: 'offence' | 'defence' | 'transition' | 'faceoff' | 'goalie';
+  /**
+   * Player secondary position (optional)
+   */
+  secondaryPosition?: ('offence' | 'defence' | 'transition' | 'faceoff' | 'goalie') | null;
+  /**
+   * Player handedness for stick handling
+   */
+  handedness: 'left' | 'right';
+  /**
+   * Runner or Goalie classification
+   */
+  playerType: 'runner' | 'goalie';
+  /**
+   * Upload player photo (optional)
+   */
+  photo?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games".
+ */
+export interface Game {
+  id: number;
+  /**
+   * Game number in tournament (e.g., "1", "2", "Pool A1")
+   */
+  gameNumber: string;
+  displayName?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  /**
+   * Pool play (12 min periods) or medal game (15 min periods)
+   */
+  gameType: 'pool' | 'medal';
+  /**
+   * Tournament day (1-3)
+   */
+  day: '1' | '2' | '3';
+  /**
+   * Game start time
+   */
+  scheduledTime: string;
+  /**
+   * Current game status
+   */
+  status: 'scheduled' | 'live' | 'final' | 'overtime';
+  homeTeam: number | Team;
+  awayTeam: number | Team;
+  homeScore?: number | null;
+  awayScore?: number | null;
+  homeStartingGoalie?: (number | null) | Player;
+  awayStartingGoalie?: (number | null) | Player;
+  /**
+   * Current goalie (for tracking changes)
+   */
+  homeCurrentGoalie?: (number | null) | Player;
+  /**
+   * Current goalie (for tracking changes)
+   */
+  awayCurrentGoalie?: (number | null) | Player;
+  /**
+   * Points awarded for each period (1 for win, 0.5 for tie, 0 for loss)
+   */
+  periodPoints?: {
+    period1Home?: number | null;
+    period1Away?: number | null;
+    period2Home?: number | null;
+    period2Away?: number | null;
+    period3Home?: number | null;
+    period3Away?: number | null;
+    totalPeriodHome?: number | null;
+    totalPeriodAway?: number | null;
+  };
+  /**
+   * Points awarded for final game result (2 for win, 1 for tie, 0 for loss)
+   */
+  finalGamePoints?: {
+    home?: number | null;
+    away?: number | null;
+  };
+  /**
+   * Total tournament points for this game (max 5 per team)
+   */
+  totalGamePoints?: {
+    home?: number | null;
+    away?: number | null;
+  };
+  /**
+   * 12 for pool play, 15 for medal games
+   */
+  periodLength?: number | null;
+  currentPeriod?: ('0' | '1' | '2' | '3' | 'OT1' | 'OT2' | 'OT3') | null;
+  /**
+   * Time remaining in current period
+   */
+  periodTimeRemaining?: number | null;
+  /**
+   * Only medal games allow overtime
+   */
+  overtimeAllowed?: boolean | null;
+  /**
+   * Live stream URL for this game
+   */
+  youtubeUrl?: string | null;
+  /**
+   * Post-game recognition (selected immediately after game)
+   */
+  threeStars?: {
+    first?: (number | null) | Player;
+    second?: (number | null) | Player;
+    third?: (number | null) | Player;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "goals".
+ */
+export interface Goal {
+  id: number;
+  displayName?: string | null;
+  /**
+   * The game this goal was scored in
+   */
+  game: number | Game;
+  /**
+   * Period in which goal was scored
+   */
+  period: '1' | '2' | '3' | 'OT1' | 'OT2' | 'OT3';
+  /**
+   * Time on game clock when goal was scored (e.g., "12:34")
+   */
+  time: string;
+  /**
+   * Seconds elapsed since game start (calculated automatically)
+   */
+  gameTime?: number | null;
+  /**
+   * Player who scored the goal
+   */
+  scorer: number | Player;
+  /**
+   * Player credited with primary assist (optional)
+   */
+  assist1?: (number | null) | Player;
+  /**
+   * Player credited with secondary assist (optional)
+   */
+  assist2?: (number | null) | Player;
+  /**
+   * Team that scored the goal
+   */
+  team: number | Team;
+  /**
+   * Type of goal scored
+   */
+  goalType: 'even_strength' | 'power_play' | 'short_handed' | 'penalty_shot';
+  /**
+   * Additional notes about the goal (optional)
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "penalties".
+ */
+export interface Penalty {
+  id: number;
+  displayName?: string | null;
+  /**
+   * The game this penalty occurred in
+   */
+  game: number | Game;
+  /**
+   * Period in which penalty was assessed
+   */
+  period: '1' | '2' | '3' | 'OT1' | 'OT2' | 'OT3';
+  /**
+   * Time on game clock when penalty was assessed (e.g., "12:34")
+   */
+  time: string;
+  /**
+   * Seconds elapsed since game start (calculated automatically)
+   */
+  gameTime?: number | null;
+  /**
+   * Player who committed the penalty
+   */
+  player: number | Player;
+  /**
+   * Team of the penalized player
+   */
+  team: number | Team;
+  /**
+   * Type of penalty infraction
+   */
+  infraction:
+    | 'slashing'
+    | 'tripping'
+    | 'interference'
+    | 'holding'
+    | 'illegal_pick'
+    | 'cross_checking'
+    | 'elbowing'
+    | 'roughing'
+    | 'unsportsmanlike_conduct'
+    | 'delay_of_game'
+    | 'illegal_substitution'
+    | 'crease_violation'
+    | 'over_and_back'
+    | 'high_sticking'
+    | 'boarding'
+    | 'face_masking'
+    | 'fighting'
+    | 'spearing'
+    | 'checking_from_behind'
+    | 'misconduct'
+    | 'game_misconduct'
+    | 'penalty_shot';
+  /**
+   * Duration of the penalty
+   */
+  duration: '30s' | '1min' | '2min' | '3min' | '5min' | '10min' | 'game' | 'penalty_shot';
+  /**
+   * Classification of penalty type
+   */
+  penaltyType: 'minor' | 'major' | 'misconduct' | 'game_misconduct' | 'penalty_shot';
+  /**
+   * Check if this is a coincidental penalty
+   */
+  coincidental?: boolean | null;
+  /**
+   * Check if this was a delayed penalty call
+   */
+  delayedPenalty?: boolean | null;
+  /**
+   * When the penalty time began
+   */
+  startTime?: string | null;
+  /**
+   * When the penalty time ended (if applicable)
+   */
+  endTime?: string | null;
+  /**
+   * Additional details about the penalty (optional)
+   */
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faceoffs".
+ */
+export interface Faceoff {
+  id: number;
+  displayName?: string | null;
+  /**
+   * The game this faceoff occurred in
+   */
+  game: number | Game;
+  /**
+   * Period in which faceoff occurred
+   */
+  period: '1' | '2' | '3' | 'OT1' | 'OT2' | 'OT3';
+  /**
+   * Time on game clock when faceoff occurred (e.g., "12:34")
+   */
+  time: string;
+  /**
+   * Seconds elapsed since game start (calculated automatically)
+   */
+  gameTime?: number | null;
+  /**
+   * Home team player taking the faceoff
+   */
+  homeFaceoffPlayer: number | Player;
+  /**
+   * Away team player taking the faceoff
+   */
+  awayFaceoffPlayer: number | Player;
+  /**
+   * Which team won the faceoff
+   */
+  winner: 'home' | 'away';
+  /**
+   * Location on the floor where faceoff occurred
+   */
+  location?: ('center' | 'home_end' | 'away_end' | 'neutral_zone') | null;
+  /**
+   * Additional notes about the faceoff (optional)
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shots".
+ */
+export interface Shot {
+  id: number;
+  displayName?: string | null;
+  /**
+   * The game this shot occurred in
+   */
+  game: number | Game;
+  /**
+   * Period in which shot occurred
+   */
+  period: '1' | '2' | '3' | 'OT1' | 'OT2' | 'OT3';
+  /**
+   * Time on game clock when shot occurred (e.g., "12:34")
+   */
+  time: string;
+  /**
+   * Seconds elapsed since game start (calculated automatically)
+   */
+  gameTime?: number | null;
+  /**
+   * Player who took the shot
+   */
+  shooter: number | Player;
+  /**
+   * Goalie who faced the shot
+   */
+  goalie: number | Player;
+  /**
+   * Team that took the shot
+   */
+  shootingTeam: number | Team;
+  /**
+   * Team of the goalie who faced the shot
+   */
+  goalieTeam: number | Team;
+  /**
+   * Check if the goalie saved the shot
+   */
+  saved: boolean;
+  /**
+   * Type of shot taken (optional)
+   */
+  shotType?: ('wrist' | 'snap' | 'slap' | 'backhand' | 'tip_in' | 'deflection' | 'rebound' | 'breakaway') | null;
+  /**
+   * Location where shot was aimed (optional)
+   */
+  shotLocation?:
+    | (
+        | 'high_left'
+        | 'high_right'
+        | 'low_left'
+        | 'low_right'
+        | 'five_hole'
+        | 'blocker_side'
+        | 'glove_side'
+        | 'top_shelf'
+        | 'bottom_corner'
+      )
+    | null;
+  /**
+   * Additional notes about the shot (optional)
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "loose-balls".
+ */
+export interface LooseBall {
+  id: number;
+  displayName?: string | null;
+  /**
+   * The game this loose ball occurred in
+   */
+  game: number | Game;
+  /**
+   * Period in which loose ball occurred
+   */
+  period: '1' | '2' | '3' | 'OT1' | 'OT2' | 'OT3';
+  /**
+   * Time on game clock when loose ball occurred (e.g., "12:34")
+   */
+  time: string;
+  /**
+   * Seconds elapsed since game start (calculated automatically)
+   */
+  gameTime?: number | null;
+  /**
+   * Player who recovered the loose ball
+   */
+  player: number | Player;
+  /**
+   * Team that recovered the loose ball
+   */
+  team: number | Team;
+  /**
+   * Location on the floor where loose ball was recovered
+   */
+  location?:
+    | ('offensive_end' | 'defensive_end' | 'center_field' | 'corner' | 'behind_net' | 'crease_area' | 'neutral_zone')
+    | null;
+  /**
+   * How the loose ball was created/recovered
+   */
+  recoveryType?: ('ground_ball' | 'rebound' | 'deflection' | 'scramble' | 'turnover' | 'faceoff') | null;
+  /**
+   * Check if the loose ball was contested by multiple players
+   */
+  contested?: boolean | null;
+  /**
+   * Additional notes about the loose ball recovery (optional)
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * System audit trail for security monitoring
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-logs".
+ */
+export interface AuditLog {
+  id: number;
+  /**
+   * Action performed (e.g., user.login, game.start, team.approve)
+   */
+  action: string;
+  /**
+   * User who performed the action
+   */
+  userId?: (number | null) | User;
+  /**
+   * ID of the resource being acted upon
+   */
+  targetId?: string | null;
+  /**
+   * Type of resource being acted upon
+   */
+  targetType?: ('user' | 'game' | 'team' | 'player' | 'goal' | 'penalty' | 'system') | null;
+  /**
+   * When the action occurred
+   */
+  timestamp: string;
+  /**
+   * IP address of the user
+   */
+  ipAddress?: string | null;
+  /**
+   * User agent string
+   */
+  userAgent?: string | null;
+  /**
+   * Additional details about the action
+   */
+  details?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Whether the action was successful
+   */
+  success?: boolean | null;
+  /**
+   * Error message if action failed
+   */
+  errorMessage?: string | null;
+  /**
+   * Severity level of the action
+   */
+  severity?: ('info' | 'warning' | 'error' | 'critical') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
-  id: string;
+  id: number;
   /**
    * You will need to rebuild the website when changing this field.
    */
@@ -749,11 +1395,11 @@ export interface Redirect {
     reference?:
       | ({
           relationTo: 'pages';
-          value: string | Page;
+          value: number | Page;
         } | null)
       | ({
           relationTo: 'posts';
-          value: string | Post;
+          value: number | Post;
         } | null);
     url?: string | null;
   };
@@ -765,8 +1411,8 @@ export interface Redirect {
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
-  id: string;
-  form: string | Form;
+  id: number;
+  form: number | Form;
   submissionData?:
     | {
         field: string;
@@ -784,18 +1430,18 @@ export interface FormSubmission {
  * via the `definition` "search".
  */
 export interface Search {
-  id: string;
+  id: number;
   title?: string | null;
   priority?: number | null;
   doc: {
     relationTo: 'posts';
-    value: string | Post;
+    value: number | Post;
   };
   slug?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
   };
   categories?:
     | {
@@ -813,7 +1459,7 @@ export interface Search {
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
-  id: string;
+  id: number;
   /**
    * Input data provided to the job
    */
@@ -905,52 +1551,88 @@ export interface PayloadJob {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'pages';
-        value: string | Page;
+        value: number | Page;
       } | null)
     | ({
         relationTo: 'posts';
-        value: string | Post;
+        value: number | Post;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
       } | null)
     | ({
         relationTo: 'categories';
-        value: string | Category;
+        value: number | Category;
       } | null)
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'teams';
+        value: number | Team;
+      } | null)
+    | ({
+        relationTo: 'players';
+        value: number | Player;
+      } | null)
+    | ({
+        relationTo: 'games';
+        value: number | Game;
+      } | null)
+    | ({
+        relationTo: 'goals';
+        value: number | Goal;
+      } | null)
+    | ({
+        relationTo: 'penalties';
+        value: number | Penalty;
+      } | null)
+    | ({
+        relationTo: 'faceoffs';
+        value: number | Faceoff;
+      } | null)
+    | ({
+        relationTo: 'shots';
+        value: number | Shot;
+      } | null)
+    | ({
+        relationTo: 'loose-balls';
+        value: number | LooseBall;
+      } | null)
+    | ({
+        relationTo: 'audit-logs';
+        value: number | AuditLog;
       } | null)
     | ({
         relationTo: 'redirects';
-        value: string | Redirect;
+        value: number | Redirect;
       } | null)
     | ({
         relationTo: 'forms';
-        value: string | Form;
+        value: number | Form;
       } | null)
     | ({
         relationTo: 'form-submissions';
-        value: string | FormSubmission;
+        value: number | FormSubmission;
       } | null)
     | ({
         relationTo: 'search';
-        value: string | Search;
+        value: number | Search;
       } | null)
     | ({
         relationTo: 'payload-jobs';
-        value: string | PayloadJob;
+        value: number | PayloadJob;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -960,10 +1642,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -983,7 +1665,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -1025,6 +1707,8 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        tournamentInfo?: T | TournamentInfoBlockSelect<T>;
+        rules?: T | RulesBlockSelect<T>;
       };
   meta?:
     | T
@@ -1121,6 +1805,54 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TournamentInfoBlock_select".
+ */
+export interface TournamentInfoBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  highlights?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  stats?:
+    | T
+    | {
+        number?: T;
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RulesBlock_select".
+ */
+export interface RulesBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  ruleCategories?:
+    | T
+    | {
+        categoryTitle?: T;
+        rules?:
+          | T
+          | {
+              rule?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  additionalInfo?: T;
   id?: T;
   blockName?: T;
 }
@@ -1273,7 +2005,10 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  name?: T;
+  role?: T;
+  firstName?: T;
+  lastName?: T;
+  password?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1290,6 +2025,226 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teams_select".
+ */
+export interface TeamsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  slugLock?: T;
+  logo?: T;
+  primaryColor?: T;
+  secondaryColor?: T;
+  city?: T;
+  province?: T;
+  captain?:
+    | T
+    | {
+        name?: T;
+        email?: T;
+        phone?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "players_select".
+ */
+export interface PlayersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  displayName?: T;
+  jerseyNumber?: T;
+  team?: T;
+  primaryPosition?: T;
+  secondaryPosition?: T;
+  handedness?: T;
+  playerType?: T;
+  photo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games_select".
+ */
+export interface GamesSelect<T extends boolean = true> {
+  gameNumber?: T;
+  displayName?: T;
+  slug?: T;
+  slugLock?: T;
+  gameType?: T;
+  day?: T;
+  scheduledTime?: T;
+  status?: T;
+  homeTeam?: T;
+  awayTeam?: T;
+  homeScore?: T;
+  awayScore?: T;
+  homeStartingGoalie?: T;
+  awayStartingGoalie?: T;
+  homeCurrentGoalie?: T;
+  awayCurrentGoalie?: T;
+  periodPoints?:
+    | T
+    | {
+        period1Home?: T;
+        period1Away?: T;
+        period2Home?: T;
+        period2Away?: T;
+        period3Home?: T;
+        period3Away?: T;
+        totalPeriodHome?: T;
+        totalPeriodAway?: T;
+      };
+  finalGamePoints?:
+    | T
+    | {
+        home?: T;
+        away?: T;
+      };
+  totalGamePoints?:
+    | T
+    | {
+        home?: T;
+        away?: T;
+      };
+  periodLength?: T;
+  currentPeriod?: T;
+  periodTimeRemaining?: T;
+  overtimeAllowed?: T;
+  youtubeUrl?: T;
+  threeStars?:
+    | T
+    | {
+        first?: T;
+        second?: T;
+        third?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "goals_select".
+ */
+export interface GoalsSelect<T extends boolean = true> {
+  displayName?: T;
+  game?: T;
+  period?: T;
+  time?: T;
+  gameTime?: T;
+  scorer?: T;
+  assist1?: T;
+  assist2?: T;
+  team?: T;
+  goalType?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "penalties_select".
+ */
+export interface PenaltiesSelect<T extends boolean = true> {
+  displayName?: T;
+  game?: T;
+  period?: T;
+  time?: T;
+  gameTime?: T;
+  player?: T;
+  team?: T;
+  infraction?: T;
+  duration?: T;
+  penaltyType?: T;
+  coincidental?: T;
+  delayedPenalty?: T;
+  startTime?: T;
+  endTime?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faceoffs_select".
+ */
+export interface FaceoffsSelect<T extends boolean = true> {
+  displayName?: T;
+  game?: T;
+  period?: T;
+  time?: T;
+  gameTime?: T;
+  homeFaceoffPlayer?: T;
+  awayFaceoffPlayer?: T;
+  winner?: T;
+  location?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shots_select".
+ */
+export interface ShotsSelect<T extends boolean = true> {
+  displayName?: T;
+  game?: T;
+  period?: T;
+  time?: T;
+  gameTime?: T;
+  shooter?: T;
+  goalie?: T;
+  shootingTeam?: T;
+  goalieTeam?: T;
+  saved?: T;
+  shotType?: T;
+  shotLocation?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "loose-balls_select".
+ */
+export interface LooseBallsSelect<T extends boolean = true> {
+  displayName?: T;
+  game?: T;
+  period?: T;
+  time?: T;
+  gameTime?: T;
+  player?: T;
+  team?: T;
+  location?: T;
+  recoveryType?: T;
+  contested?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-logs_select".
+ */
+export interface AuditLogsSelect<T extends boolean = true> {
+  action?: T;
+  userId?: T;
+  targetId?: T;
+  targetType?: T;
+  timestamp?: T;
+  ipAddress?: T;
+  userAgent?: T;
+  details?: T;
+  success?: T;
+  errorMessage?: T;
+  severity?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1551,7 +2506,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  * via the `definition` "header".
  */
 export interface Header {
-  id: string;
+  id: number;
   navItems?:
     | {
         link: {
@@ -1560,11 +2515,11 @@ export interface Header {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -1580,7 +2535,7 @@ export interface Header {
  * via the `definition` "footer".
  */
 export interface Footer {
-  id: string;
+  id: number;
   navItems?:
     | {
         link: {
@@ -1589,11 +2544,11 @@ export interface Footer {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -1661,14 +2616,14 @@ export interface TaskSchedulePublish {
     doc?:
       | ({
           relationTo: 'pages';
-          value: string | Page;
+          value: number | Page;
         } | null)
       | ({
           relationTo: 'posts';
-          value: string | Post;
+          value: number | Post;
         } | null);
     global?: string | null;
-    user?: (string | null) | User;
+    user?: (number | null) | User;
   };
   output?: unknown;
 }
