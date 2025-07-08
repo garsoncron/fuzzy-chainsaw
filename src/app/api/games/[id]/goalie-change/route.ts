@@ -20,9 +20,10 @@ interface GoalieChangeRequest {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<Response> {
-  const gameId = params.id
+  const resolvedParams = await params
+  const gameId = resolvedParams.id
   
   try {
     const payload = await getPayload({

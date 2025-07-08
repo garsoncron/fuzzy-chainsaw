@@ -501,6 +501,27 @@ export const Games: CollectionConfig = {
             description: 'Live stream URL for this game',
           },
         },
+        // TODO: Add these fields after database migration
+        // {
+        //   name: 'assignedScorekeeper',
+        //   type: 'relationship',
+        //   relationTo: 'users',
+        //   label: 'Assigned Scorekeeper',
+        //   admin: {
+        //     description: 'Scorekeeper assigned to manage this game',
+        //   },
+        // },
+        // {
+        //   name: 'claimedAt',
+        //   type: 'date',
+        //   label: 'Claimed At',
+        //   admin: {
+        //     description: 'When the game was claimed by scorekeeper',
+        //     date: {
+        //       pickerAppearance: 'dayAndTime' as const,
+        //     },
+        //   },
+        // },
         {
           type: 'group',
           name: 'threeStars',

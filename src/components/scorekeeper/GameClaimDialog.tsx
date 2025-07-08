@@ -24,10 +24,11 @@ interface GameClaimDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   game: Game | null
+  currentUser: any
   onClaim: () => void
 }
 
-export function GameClaimDialog({ open, onOpenChange, game, onClaim }: GameClaimDialogProps) {
+export function GameClaimDialog({ open, onOpenChange, game, currentUser, onClaim }: GameClaimDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -38,21 +39,30 @@ export function GameClaimDialog({ open, onOpenChange, game, onClaim }: GameClaim
     setError(null)
 
     try {
+      console.log('🎮 Claiming game:', game.id)
+      
+      // Make the claim request to the API
       const response = await fetch(`/api/games/${game.id}/claim`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include cookies for authentication
       })
 
+      console.log('📡 Response status:', response.status)
+      const responseData = await response.json()
+      console.log('📊 Response data:', responseData)
+
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to claim game')
+        throw new Error(responseData.message || 'Failed to claim game')
       }
 
+      console.log('✅ Game claimed successfully!')
       onClaim()
       onOpenChange(false)
     } catch (err) {
+      console.error('❌ Claim error:', err)
       setError(err instanceof Error ? err.message : 'Failed to claim game')
     } finally {
       setIsLoading(false)
@@ -63,33 +73,33 @@ export function GameClaimDialog({ open, onOpenChange, game, onClaim }: GameClaim
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
         <DialogHeader>
-          <DialogTitle className="text-xl">Claim Game</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl text-primary-brown dark:text-golden">🤠 Claim Game</DialogTitle>
+          <DialogDescription className="text-gray-700 dark:text-gray-300">
             Are you sure you want to claim this game for scoring?
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           {/* Game Details */}
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">Game {game.gameNumber}</h3>
+          <div className="p-4 bg-amber-50 dark:bg-gray-700 rounded-lg border border-primary-brown/20">
+            <h3 className="font-semibold text-lg mb-2 text-primary-brown dark:text-golden">Game {game.gameNumber}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="font-medium">Teams:</span>
-                <span>
+                <span className="font-medium text-gray-800 dark:text-gray-200">Teams:</span>
+                <span className="text-gray-900 dark:text-gray-100">
                   {typeof game.homeTeam === 'object' ? game.homeTeam.name : 'TBD'} vs{' '}
                   {typeof game.awayTeam === 'object' ? game.awayTeam.name : 'TBD'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium">Scheduled:</span>
-                <span>{formatDateTime(game.scheduledTime)}</span>
+                <span className="font-medium text-gray-800 dark:text-gray-200">Scheduled:</span>
+                <span className="text-gray-900 dark:text-gray-100">{formatDateTime(game.scheduledTime)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium">Type:</span>
-                <span className="capitalize">{game.gameType} Game</span>
+                <span className="font-medium text-gray-800 dark:text-gray-200">Type:</span>
+                <span className="capitalize text-gray-900 dark:text-gray-100">{game.gameType} Game</span>
               </div>
             </div>
           </div>
@@ -113,21 +123,21 @@ export function GameClaimDialog({ open, onOpenChange, game, onClaim }: GameClaim
           )}
         </div>
 
-        <DialogFooter className="flex gap-2">
+        <DialogFooter className="flex gap-3">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 border-primary-brown/30 text-primary-brown hover:bg-primary-brown/10"
           >
             Cancel
           </Button>
           <Button
             onClick={handleClaim}
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 bg-primary-brown hover:bg-dark-brown text-white"
           >
-            {isLoading ? 'Claiming...' : 'Claim Game'}
+            {isLoading ? '🔄 Claiming...' : '🤝 Claim Game'}
           </Button>
         </DialogFooter>
       </DialogContent>

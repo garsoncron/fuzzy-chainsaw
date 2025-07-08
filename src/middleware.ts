@@ -46,6 +46,8 @@ export async function middleware(req: NextRequest) {
   const isProtectedEndpoint = !pathname.startsWith('/api/users/first-register') && 
                              !pathname.startsWith('/api/users/login') && 
                              !pathname.startsWith('/api/users/logout') &&
+                             !pathname.startsWith('/api/csrf') && // Exclude CSRF token endpoint
+                             !pathname.startsWith('/api/games/') && // Exclude games endpoints from CSRF (they handle auth internally)
                              !pathname.startsWith('/api/graphql') // Exclude GraphQL introspection
   
   if (isStateMutatingRequest && isAPIRequest && isProtectedEndpoint) {

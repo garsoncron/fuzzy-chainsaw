@@ -11,17 +11,18 @@ import { requireGameScorekeeper } from '@/lib/auth'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params
     // Authenticate user and verify game assignment
-    const user = await requireGameScorekeeper(request, params.id)
+    const user = await requireGameScorekeeper(request, resolvedParams.id)
     const payload = await getPayload({ config })
     
     // Get the game
     const game = await payload.findByID({
       collection: 'games',
-      id: params.id,
+      id: resolvedParams.id,
     })
 
     if (!game) {
@@ -68,7 +69,7 @@ export async function POST(
     // End the game
     const updatedGame = await payload.update({
       collection: 'games',
-      id: params.id,
+      id: resolvedParams.id,
       data: {
         status: 'final',
         finalGamePoints,

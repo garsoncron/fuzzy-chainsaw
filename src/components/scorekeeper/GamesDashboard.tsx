@@ -24,6 +24,7 @@ interface GamesDashboardProps {
 }
 
 export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
+  const [currentGames, setCurrentGames] = useState(games)
   const [filteredGames, setFilteredGames] = useState(games)
   const [selectedDay, setSelectedDay] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
@@ -33,9 +34,29 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
+  // Refresh games from server
+  const refreshGames = async () => {
+    try {
+      console.log('🔄 Refreshing games data...')
+      const response = await fetch('/api/games', {
+        credentials: 'include',
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setCurrentGames(data.docs || [])
+        console.log('✅ Games refreshed successfully')
+      } else {
+        console.error('❌ Failed to refresh games')
+      }
+    } catch (error) {
+      console.error('❌ Error refreshing games:', error)
+    }
+  }
+
   // Filter games based on search and filter criteria
   useEffect(() => {
-    let filtered = games
+    let filtered = currentGames
 
     if (selectedDay !== 'all') {
       filtered = filtered.filter(game => game.day === parseInt(selectedDay))
@@ -54,7 +75,7 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
     }
 
     setFilteredGames(filtered)
-  }, [games, selectedDay, selectedStatus, searchTerm])
+  }, [currentGames, selectedDay, selectedStatus, searchTerm])
 
   const handleClaimGame = (game: Game) => {
     setSelectedGame(game)
@@ -62,6 +83,12 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
   }
 
   const handleManageGame = (game: Game) => {
+    console.log('🎮 Navigating to game:', game.id, 'Status:', game.status)
+    router.push(`/scorekeeper/game/${game.id}`)
+  }
+
+  const handleViewGame = (game: Game) => {
+    console.log('👀 Viewing completed game:', game.id)
     router.push(`/scorekeeper/game/${game.id}`)
   }
 
@@ -99,6 +126,10 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
 
   const isUserAssigned = (game: Game) => {
     return game.assignedScorekeeper?.id === currentUser.id
+  }
+
+  const getAssignedUser = (game: Game) => {
+    return game.assignedScorekeeper?.name || null
   }
 
   return (
@@ -210,11 +241,11 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
                 </div>
 
                 {/* Scorekeeper Info */}
-                {game.assignedScorekeeper && (
+                {getAssignedUser(game) && (
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-gray-500">Scorekeeper:</span>
                     <span className={isUserAssigned(game) ? 'text-green-600 font-semibold' : 'text-gray-700'}>
-                      {game.assignedScorekeeper.name || game.assignedScorekeeper.email}
+                      {getAssignedUser(game)}
                       {isUserAssigned(game) && ' (You)'}
                     </span>
                   </div>
@@ -222,6 +253,7 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4">
+                  {/* Claim Game - for unclaimed scheduled games */}
                   {canClaimGame(game) && (
                     <Button
                       onClick={() => handleClaimGame(game)}
@@ -232,23 +264,47 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
                     </Button>
                   )}
 
-                  {isUserAssigned(game) && (
+                  {/* Manage Game - for games you're assigned to (scheduled, live, or overtime) */}
+                  {isUserAssigned(game) && (game.status === 'scheduled' || game.status === 'live' || game.status === 'overtime') && (
                     <Button
                       onClick={() => handleManageGame(game)}
                       className="flex-1 h-12 text-base bg-golden hover:bg-golden/90 text-dark-brown font-bold shadow-md hover:shadow-lg transition-all duration-200"
                       variant="default"
                     >
-                      🎮 Manage Game →
+                      {game.status === 'scheduled' ? '🎮 Start Game' : '🎮 Manage Live'}
                     </Button>
                   )}
 
-                  {game.assignedScorekeeper && !isUserAssigned(game) && (
+                  {/* View Completed Game - for final games you managed */}
+                  {isUserAssigned(game) && game.status === 'final' && (
+                    <Button
+                      onClick={() => handleViewGame(game)}
+                      className="flex-1 h-12 text-base bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                      variant="default"
+                    >
+                      📊 View Final Stats
+                    </Button>
+                  )}
+
+                  {/* View Any Completed Game - for admins or any final game */}
+                  {game.status === 'final' && !isUserAssigned(game) && currentUser.role === 'admin' && (
+                    <Button
+                      onClick={() => handleViewGame(game)}
+                      className="flex-1 h-12 text-base bg-gray-600 hover:bg-gray-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                      variant="default"
+                    >
+                      👀 View Game
+                    </Button>
+                  )}
+
+                  {/* Claimed by other user */}
+                  {getAssignedUser(game) && !isUserAssigned(game) && game.status !== 'final' && (
                     <Button
                       disabled
-                      className="flex-1 h-12 text-base opacity-50 cursor-not-allowed"
+                      className="flex-1 h-12 text-base opacity-50 cursor-not-allowed border-dashed"
                       variant="outline"
                     >
-                      🔒 Claimed by {game.assignedScorekeeper.name || 'Other User'}
+                      🔒 Claimed by {getAssignedUser(game)}
                     </Button>
                   )}
                 </div>
@@ -264,9 +320,10 @@ export function GamesDashboard({ games, currentUser }: GamesDashboardProps) {
         open={claimDialogOpen}
         onOpenChange={setClaimDialogOpen}
         game={selectedGame}
+        currentUser={currentUser}
         onClaim={() => {
-          // Refresh the page to update the games list
-          window.location.reload()
+          // Refresh the games data
+          refreshGames()
         }}
       />
     </div>

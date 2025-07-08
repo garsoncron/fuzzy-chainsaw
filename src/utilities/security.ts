@@ -44,7 +44,7 @@ export const rateLimit = (config: RateLimitConfig) => {
     }
     
     // Get or create rate limit data
-    let data = rateLimitStore.get(key) || {
+    const data = rateLimitStore.get(key) || {
       count: 0,
       resetTime: now + config.windowMs,
     }
@@ -105,7 +105,7 @@ export const csrfProtection = async (req: NextRequest): Promise<NextResponse | n
   if (req.method === 'GET') return null
   
   const csrfToken = req.headers.get('x-csrf-token')
-  const sessionToken = req.headers.get('authorization')
+  const sessionToken = req.headers.get('authorization') || req.cookies.get('payload-token')?.value
   
   if (!csrfToken || !sessionToken) {
     return NextResponse.json(
@@ -207,19 +207,52 @@ export const getClientIP = (req: NextRequest): string => {
  * Validate CSRF token (implement your own logic)
  */
 export const validateCSRFToken = (token: string, sessionToken: string): boolean => {
-  // TODO: Implement proper CSRF token validation
-  // This is a simplified example
-  return token.length > 0 && sessionToken.length > 0
+  try {
+    // Decode the CSRF token
+    const decoded = Buffer.from(token, 'base64').toString('utf-8')
+    const parts = decoded.split(':')
+    
+    if (parts.length !== 3) {
+      return false
+    }
+    
+    const [tokenSessionPart, timestamp, randomBytes] = parts
+    
+    // Check if the session token matches
+    if (tokenSessionPart !== sessionToken.substring(0, 10)) {
+      return false
+    }
+    
+    // Check if the token is not too old (1 hour max)
+    const tokenTime = parseInt(timestamp)
+    const now = Date.now()
+    const oneHour = 60 * 60 * 1000
+    
+    if (now - tokenTime > oneHour) {
+      return false
+    }
+    
+    // Check if randomBytes exist
+    if (!randomBytes || randomBytes.length === 0) {
+      return false
+    }
+    
+    return true
+  } catch (error) {
+    console.error('CSRF token validation error:', error)
+    return false
+  }
 }
 
 /**
  * Generate CSRF token
  */
 export const generateCSRFToken = (sessionToken: string): string => {
-  // TODO: Implement proper CSRF token generation
-  // This is a simplified example
+  // Create a more robust CSRF token
   const timestamp = Date.now().toString()
-  return Buffer.from(`${sessionToken}:${timestamp}`).toString('base64')
+  const randomBytes = Math.random().toString(36).substring(2, 15)
+  const tokenPayload = `${sessionToken.substring(0, 10)}:${timestamp}:${randomBytes}`
+  return Buffer.from(tokenPayload).toString('base64')
 }
 
 /**

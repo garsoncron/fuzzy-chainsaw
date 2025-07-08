@@ -64,7 +64,8 @@ export function GameLog({
     })
   }
 
-  const getEventIcon = (type: string) => {
+  const getEventIcon = (type: string | undefined) => {
+    if (!type) return <div className="w-4 h-4 bg-gray-400 rounded-full" />
     switch (type) {
       case 'goal':
         return <Target className="w-4 h-4 text-green-600" />
@@ -91,6 +92,8 @@ export function GameLog({
 
   const getEventDescription = (event: GameEvent): string => {
     const { type, data } = event
+    
+    if (!type) return 'Unknown event'
     
     switch (type) {
       case 'goal':
@@ -120,7 +123,8 @@ export function GameLog({
     }
   }
 
-  const getEventBadgeColor = (type: string) => {
+  const getEventBadgeColor = (type: string | undefined) => {
+    if (!type) return 'bg-gray-100 text-gray-800'
     switch (type) {
       case 'goal':
         return 'bg-green-100 text-green-800'
@@ -145,11 +149,12 @@ export function GameLog({
   }
 
   const filteredEvents = events.filter(event => {
+    if (!event || !event.type) return false
     if (filter === 'all') return true
     return event.type === filter
   })
 
-  const eventTypes = [...new Set(events.map(event => event.type))]
+  const eventTypes = [...new Set(events.map(event => event.type).filter(Boolean))]
 
   return (
     <Card className="h-full">
@@ -179,7 +184,7 @@ export function GameLog({
               size="sm"
               className="capitalize"
             >
-              {type.replace('_', ' ')}
+              {type ? type.replace('_', ' ') : 'Unknown'}
             </Button>
           ))}
         </div>
@@ -215,7 +220,7 @@ export function GameLog({
                           </div>
                           <div className="flex items-center gap-2 mt-1">
                             <Badge className={getEventBadgeColor(event.type)} size="sm">
-                              {event.type.replace('_', ' ')}
+                              {event.type ? event.type.replace('_', ' ') : 'Unknown'}
                             </Badge>
                             <span className="text-xs text-muted-foreground">
                               P{event.period} • {formatTime(event.timestamp)}

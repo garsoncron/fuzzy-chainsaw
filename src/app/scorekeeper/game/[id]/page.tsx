@@ -12,12 +12,13 @@ import { getCurrentUser } from '@/lib/auth'
 import { ScoringInterface } from '@/components/scorekeeper/ScoringInterface'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function GameScoringPage({ params }: PageProps) {
+  const resolvedParams = await params
   const payload = await getPayload({ config })
   const user = await getCurrentUser()
 
@@ -30,7 +31,7 @@ export default async function GameScoringPage({ params }: PageProps) {
   try {
     const game = await payload.findByID({
       collection: 'games',
-      id: params.id,
+      id: resolvedParams.id,
       populate: {
         homeTeam: true,
         awayTeam: true,
@@ -46,8 +47,19 @@ export default async function GameScoringPage({ params }: PageProps) {
       },
     })
 
+    // Parse claim data from youtubeUrl field
+    let assignedScorekeeper = null
+    if (game.youtubeUrl && game.youtubeUrl.startsWith('CLAIM_DATA:')) {
+      try {
+        const claimData = JSON.parse(game.youtubeUrl.replace('CLAIM_DATA:', ''))
+        assignedScorekeeper = claimData.assignedScorekeeper
+      } catch (error) {
+        console.error('Error parsing claim data:', error)
+      }
+    }
+
     // Check if user is assigned to this game (or is admin)
-    if (user.role !== 'admin' && game.assignedScorekeeper?.id !== user.id) {
+    if (user.role !== 'admin' && user.role !== 'superAdmin' && assignedScorekeeper?.id !== user.id) {
       return (
         <div className="min-h-screen bg-background p-4 flex items-center justify-center">
           <div className="text-center">
