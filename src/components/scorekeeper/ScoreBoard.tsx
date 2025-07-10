@@ -82,9 +82,6 @@ export function ScoreBoard({
             <div className="text-lg font-semibold text-blue-600">
               {homeTeam?.name || 'Home Team'}
             </div>
-            <div className="text-sm text-muted-foreground">
-              {homeTeam?.city || 'City'}
-            </div>
           </div>
           <div className="text-4xl font-bold text-blue-600">
             {homeScore}
@@ -101,9 +98,6 @@ export function ScoreBoard({
           <div className="flex-1">
             <div className="text-lg font-semibold text-red-600">
               {awayTeam?.name || 'Away Team'}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {awayTeam?.city || 'City'}
             </div>
           </div>
           <div className="text-4xl font-bold text-red-600">

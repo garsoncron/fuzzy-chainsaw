@@ -50,7 +50,7 @@ export function TeamsPage({ teams, players }: TeamsPageProps) {
                 <div className="p-6">
                   {/* Team Logo */}
                   <div className="flex justify-center mb-4">
-                    {team.logo && typeof team.logo === 'object' && team.logo.url ? (
+{team.logo && typeof team.logo === 'object' && team.logo.url && (
                       <Image
                         src={team.logo.url}
                         alt={`${team.name} logo`}
@@ -58,13 +58,6 @@ export function TeamsPage({ teams, players }: TeamsPageProps) {
                         height={80}
                         className="rounded-full object-cover"
                       />
-                    ) : (
-                      <div 
-                        className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl"
-                        style={{ backgroundColor: team.primaryColor || '#934F25' }}
-                      >
-                        {team.name.charAt(0)}
-                      </div>
                     )}
                   </div>
 
@@ -73,10 +66,6 @@ export function TeamsPage({ teams, players }: TeamsPageProps) {
                     {team.name}
                   </h2>
 
-                  {/* Team Location */}
-                  <p className="text-center text-amber-700 mb-4">
-                    {team.city}, {team.province}
-                  </p>
 
                   {/* Roster Stats */}
                   <div className="border-t pt-4">
@@ -89,23 +78,6 @@ export function TeamsPage({ teams, players }: TeamsPageProps) {
                     </div>
                   </div>
 
-                  {/* Team Colors */}
-                  <div className="flex justify-center space-x-2 mt-4">
-                    {team.primaryColor && (
-                      <div
-                        className="w-4 h-4 rounded-full border-2 border-gray-300"
-                        style={{ backgroundColor: team.primaryColor }}
-                        title={`Primary: ${team.primaryColor}`}
-                      />
-                    )}
-                    {team.secondaryColor && (
-                      <div
-                        className="w-4 h-4 rounded-full border-2 border-gray-300"
-                        style={{ backgroundColor: team.secondaryColor }}
-                        title={`Secondary: ${team.secondaryColor}`}
-                      />
-                    )}
-                  </div>
                 </div>
               </Link>
             )

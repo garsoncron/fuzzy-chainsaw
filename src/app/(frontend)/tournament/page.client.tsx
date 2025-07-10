@@ -189,7 +189,6 @@ export function TournamentHomepage({
               <div className="flex justify-between items-center p-4 bg-background rounded-lg">
                 <div>
                   <div className="font-semibold text-lg">{game.homeTeam.name}</div>
-                  <div className="text-sm text-muted-foreground">{game.homeTeam.city}</div>
                 </div>
                 <div className="text-3xl font-bold text-primary-brown">
                   {game.homeScore || 0}
@@ -198,7 +197,6 @@ export function TournamentHomepage({
               <div className="flex justify-between items-center p-4 bg-background rounded-lg">
                 <div>
                   <div className="font-semibold text-lg">{game.awayTeam.name}</div>
-                  <div className="text-sm text-muted-foreground">{game.awayTeam.city}</div>
                 </div>
                 <div className="text-3xl font-bold text-primary-brown">
                   {game.awayScore || 0}

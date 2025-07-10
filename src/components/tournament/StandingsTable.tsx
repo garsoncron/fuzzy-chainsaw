@@ -290,9 +290,6 @@ export function StandingsTable({ games, teams, className = '' }: StandingsTableP
                     <div className="flex items-center space-x-2">
                       <div>
                         <div className="font-semibold">{stat.team.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {stat.team.city}, {stat.team.province}
-                        </div>
                       </div>
                     </div>
                   </td>
