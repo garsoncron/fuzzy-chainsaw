@@ -6,5 +6,5 @@ import type { Access } from 'payload'
  * @security Only users with 'scorekeeper', 'admin', or 'superAdmin' role can access
  */
 export const isScorekeeper: Access = ({ req: { user } }) => {
-  return ['superAdmin', 'admin', 'scorekeeper'].includes(user?.role)
+  return user?.role ? ['superAdmin', 'admin', 'scorekeeper'].includes(user.role) : false
 }

@@ -364,7 +364,7 @@ export default function TestDataPage() {
           <CardTitle className="text-primary-brown">How to Use This Page</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <div>• <strong>Test All:</strong> Click "Test All Endpoints" to verify all APIs</div>
+          <div>• <strong>Test All:</strong> Click &quot;Test All Endpoints&quot; to verify all APIs</div>
           <div>• <strong>Individual Tests:</strong> Click each endpoint button to test specific data</div>
           <div>• <strong>Data Verification:</strong> Check the JSON output for correct data structure</div>
           <div>• <strong>Error Handling:</strong> Red indicators show failed requests with error details</div>

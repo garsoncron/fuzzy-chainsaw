@@ -139,7 +139,7 @@ export function PeriodControls({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Start Game</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will begin Period 1 and set the game status to "Live". 
+                    This will begin Period 1 and set the game status to &quot;Live&quot;. 
                     Make sure both teams are ready and starting goalies are set.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -230,8 +230,8 @@ export function PeriodControls({
                 <AlertDialogHeader>
                   <AlertDialogTitle>End Game</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will end the game immediately and set the status to "Final". 
-                    Make sure you've recorded all statistics and are ready to select three stars.
+                    This will end the game immediately and set the status to &quot;Final&quot;. 
+                    Make sure you&apos;ve recorded all statistics and are ready to select three stars.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -250,7 +250,7 @@ export function PeriodControls({
           {isPreGame && (
             <div className="flex items-center gap-2 p-2 bg-blue-50 rounded">
               <AlertTriangle className="w-4 h-4 text-blue-600" />
-              <span>Game not started. Click "Start Game" to begin Period 1.</span>
+              <span>Game not started. Click &quot;Start Game&quot; to begin Period 1.</span>
             </div>
           )}
           

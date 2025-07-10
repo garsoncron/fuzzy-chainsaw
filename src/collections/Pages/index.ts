@@ -7,8 +7,10 @@ import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { SuperheroBanner } from '../../blocks/SuperheroBanner/config'
 import { TournamentInfo } from '../../blocks/TournamentInfo/config'
 import { Rules } from '../../blocks/Rules/config'
+import { YouTubeEmbed } from '../../blocks/YouTubeEmbed/config'
 import { hero } from '@/heros/config'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -77,7 +79,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, TournamentInfo, Rules],
+              blocks: [CallToAction, Content, MediaBlock, SuperheroBanner, Archive, FormBlock, TournamentInfo, Rules, YouTubeEmbed],
               required: true,
               admin: {
                 initCollapsed: true,

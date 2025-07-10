@@ -73,7 +73,7 @@ export default async function StandingsPage() {
             Tournament Standings
           </h1>
           <p className="text-muted-foreground">
-            Sorry, we're having trouble loading the standings. Please try again later.
+            Sorry, we&apos;re having trouble loading the standings. Please try again later.
           </p>
         </div>
       </div>

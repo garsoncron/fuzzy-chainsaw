@@ -24,6 +24,7 @@ import { LooseBalls } from './collections/LooseBalls'
 import { AuditLogs } from './collections/AuditLogs'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
+import { Homepage } from './globals/Homepage/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -96,7 +97,7 @@ export default buildConfig({
     AuditLogs,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Header, Footer, Homepage],
   plugins: [
     ...plugins,
     // storage-adapter-placeholder

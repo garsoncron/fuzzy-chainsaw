@@ -6,5 +6,5 @@ import type { FieldAccess } from 'payload'
  * @security Only admin and super admin users can access admin fields
  */
 export const adminFieldAccess: FieldAccess = ({ req: { user } }) => {
-  return ['superAdmin', 'admin'].includes(user?.role)
+  return user?.role ? ['superAdmin', 'admin'].includes(user.role) : false
 }

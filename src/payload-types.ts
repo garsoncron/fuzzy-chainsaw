@@ -121,10 +121,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    homepage: Homepage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
   };
   locale: null;
   user: User & {
@@ -196,8 +198,24 @@ export interface Page {
               | ({
                   relationTo: 'posts';
                   value: number | Post;
+                } | null)
+              | ({
+                  relationTo: 'teams';
+                  value: number | Team;
+                } | null)
+              | ({
+                  relationTo: 'games';
+                  value: number | Game;
                 } | null);
             url?: string | null;
+            /**
+             * For internal paths like /about or /contact
+             */
+            customPath?: string | null;
+            /**
+             * URL hash for page sections (e.g., #contact)
+             */
+            hash?: string | null;
             label: string;
             /**
              * Choose how the link should be rendered.
@@ -213,10 +231,12 @@ export interface Page {
     | CallToActionBlock
     | ContentBlock
     | MediaBlock
+    | HeroBannerBlock
     | ArchiveBlock
     | FormBlock
     | TournamentInfoBlock
     | RulesBlock
+    | YouTubeEmbed
   )[];
   meta?: {
     title?: string | null;
@@ -422,6 +442,190 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teams".
+ */
+export interface Team {
+  id: number;
+  /**
+   * Full team name (e.g., "Calgary Bears")
+   */
+  name: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  /**
+   * Upload team logo for branding
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Hex color code (e.g., #934F25)
+   */
+  primaryColor?: string | null;
+  /**
+   * Secondary hex color code (e.g., #D6AC4D)
+   */
+  secondaryColor?: string | null;
+  /**
+   * Team city (e.g., "Calgary")
+   */
+  city: string;
+  /**
+   * Team province (e.g., "Alberta")
+   */
+  province: string;
+  /**
+   * Primary contact for team communication
+   */
+  captain: {
+    name: string;
+    email: string;
+    /**
+     * Phone number for tournament communication
+     */
+    phone: string;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games".
+ */
+export interface Game {
+  id: number;
+  /**
+   * Game number in tournament (e.g., "1", "2", "Pool A1")
+   */
+  gameNumber: string;
+  displayName?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  /**
+   * Pool play (12 min periods) or medal game (15 min periods)
+   */
+  gameType: 'pool' | 'medal';
+  /**
+   * Tournament day (1-3)
+   */
+  day: '1' | '2' | '3';
+  /**
+   * Game start time
+   */
+  scheduledTime: string;
+  /**
+   * Current game status
+   */
+  status: 'scheduled' | 'live' | 'final' | 'overtime';
+  homeTeam: number | Team;
+  awayTeam: number | Team;
+  homeScore?: number | null;
+  awayScore?: number | null;
+  homeStartingGoalie?: (number | null) | Player;
+  awayStartingGoalie?: (number | null) | Player;
+  /**
+   * Current goalie (for tracking changes)
+   */
+  homeCurrentGoalie?: (number | null) | Player;
+  /**
+   * Current goalie (for tracking changes)
+   */
+  awayCurrentGoalie?: (number | null) | Player;
+  /**
+   * Points awarded for each period (1 for win, 0.5 for tie, 0 for loss)
+   */
+  periodPoints?: {
+    period1Home?: number | null;
+    period1Away?: number | null;
+    period2Home?: number | null;
+    period2Away?: number | null;
+    period3Home?: number | null;
+    period3Away?: number | null;
+    totalPeriodHome?: number | null;
+    totalPeriodAway?: number | null;
+  };
+  /**
+   * Points awarded for final game result (2 for win, 1 for tie, 0 for loss)
+   */
+  finalGamePoints?: {
+    home?: number | null;
+    away?: number | null;
+  };
+  /**
+   * Total tournament points for this game (max 5 per team)
+   */
+  totalGamePoints?: {
+    home?: number | null;
+    away?: number | null;
+  };
+  /**
+   * 12 for pool play, 15 for medal games
+   */
+  periodLength?: number | null;
+  currentPeriod?: ('0' | '1' | '2' | '3' | 'OT1' | 'OT2' | 'OT3') | null;
+  /**
+   * Time remaining in current period
+   */
+  periodTimeRemaining?: number | null;
+  /**
+   * Only medal games allow overtime
+   */
+  overtimeAllowed?: boolean | null;
+  /**
+   * Live stream URL for this game
+   */
+  youtubeUrl?: string | null;
+  /**
+   * Post-game recognition (selected immediately after game)
+   */
+  threeStars?: {
+    first?: (number | null) | Player;
+    second?: (number | null) | Player;
+    third?: (number | null) | Player;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "players".
+ */
+export interface Player {
+  id: number;
+  firstName: string;
+  lastName: string;
+  displayName?: string | null;
+  /**
+   * Player jersey number (0-99)
+   */
+  jerseyNumber: number;
+  /**
+   * The team this player belongs to
+   */
+  team: number | Team;
+  /**
+   * Player primary position
+   */
+  primaryPosition: 'offence' | 'defence' | 'transition' | 'faceoff' | 'goalie';
+  /**
+   * Player secondary position (optional)
+   */
+  secondaryPosition?: ('offence' | 'defence' | 'transition' | 'faceoff' | 'goalie') | null;
+  /**
+   * Player handedness for stick handling
+   */
+  handedness: 'left' | 'right';
+  /**
+   * Runner or Goalie classification
+   */
+  playerType: 'runner' | 'goalie';
+  /**
+   * Upload player photo (optional)
+   */
+  photo?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CallToActionBlock".
  */
 export interface CallToActionBlock {
@@ -453,8 +657,24 @@ export interface CallToActionBlock {
             | ({
                 relationTo: 'posts';
                 value: number | Post;
+              } | null)
+            | ({
+                relationTo: 'teams';
+                value: number | Team;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: number | Game;
               } | null);
           url?: string | null;
+          /**
+           * For internal paths like /about or /contact
+           */
+          customPath?: string | null;
+          /**
+           * URL hash for page sections (e.g., #contact)
+           */
+          hash?: string | null;
           label: string;
           /**
            * Choose how the link should be rendered.
@@ -503,8 +723,24 @@ export interface ContentBlock {
             | ({
                 relationTo: 'posts';
                 value: number | Post;
+              } | null)
+            | ({
+                relationTo: 'teams';
+                value: number | Team;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: number | Game;
               } | null);
           url?: string | null;
+          /**
+           * For internal paths like /about or /contact
+           */
+          customPath?: string | null;
+          /**
+           * URL hash for page sections (e.g., #contact)
+           */
+          hash?: string | null;
           label: string;
           /**
            * Choose how the link should be rendered.
@@ -527,6 +763,130 @@ export interface MediaBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBannerBlock".
+ */
+export interface HeroBannerBlock {
+  /**
+   * Hero background image (recommended: 2880x1620px)
+   */
+  backgroundImage: number | Media;
+  /**
+   * Optional announcement badge above the main heading
+   */
+  announcementBadge?: {
+    /**
+     * Badge text (e.g., "Live games happening now")
+     */
+    text?: string | null;
+    /**
+     * Link text (e.g., "View live games")
+     */
+    linkText?: string | null;
+    /**
+     * Path to live games page
+     */
+    linkUrl?: string | null;
+  };
+  /**
+   * Main hero heading (e.g., "Cowtown Showdown 2024")
+   */
+  heading: string;
+  /**
+   * Supporting text below the heading
+   */
+  subheading: string;
+  /**
+   * Primary call-to-action button
+   */
+  primaryCTA: {
+    /**
+     * Primary button text (e.g., "View Tournament")
+     */
+    text: string;
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null)
+      | ({
+          relationTo: 'teams';
+          value: number | Team;
+        } | null)
+      | ({
+          relationTo: 'games';
+          value: number | Game;
+        } | null);
+    url?: string | null;
+    /**
+     * For internal paths like /about or /contact
+     */
+    customPath?: string | null;
+    /**
+     * URL hash for page sections (e.g., #contact)
+     */
+    hash?: string | null;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline') | null;
+  };
+  /**
+   * Optional secondary call-to-action link
+   */
+  secondaryCTA?: {
+    /**
+     * Secondary link text (e.g., "Learn more")
+     */
+    text?: string | null;
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null)
+      | ({
+          relationTo: 'teams';
+          value: number | Team;
+        } | null)
+      | ({
+          relationTo: 'games';
+          value: number | Game;
+        } | null);
+    url?: string | null;
+    /**
+     * For internal paths like /about or /contact
+     */
+    customPath?: string | null;
+    /**
+     * URL hash for page sections (e.g., #contact)
+     */
+    hash?: string | null;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline') | null;
+  };
+  /**
+   * Enable gradient overlay for better text contrast
+   */
+  enableGradientOverlay?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heroBanner';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -829,187 +1189,40 @@ export interface RulesBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teams".
+ * via the `definition` "YouTubeEmbed".
  */
-export interface Team {
-  id: number;
+export interface YouTubeEmbed {
   /**
-   * Full team name (e.g., "Calgary Bears")
+   * Enter the YouTube video URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID)
    */
-  name: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
+  url: string;
   /**
-   * Upload team logo for branding
+   * Optional title to display above the video
    */
-  logo?: (number | null) | Media;
+  title?: string | null;
   /**
-   * Hex color code (e.g., #934F25)
+   * Autoplay the video when it comes into view (requires muted)
    */
-  primaryColor?: string | null;
+  autoplay?: boolean | null;
   /**
-   * Secondary hex color code (e.g., #D6AC4D)
+   * Start the video muted (required for autoplay)
    */
-  secondaryColor?: string | null;
+  muted?: boolean | null;
   /**
-   * Team city (e.g., "Calgary")
+   * Show video player controls
    */
-  city: string;
+  showControls?: boolean | null;
   /**
-   * Team province (e.g., "Alberta")
+   * Video aspect ratio for responsive sizing
    */
-  province: string;
+  aspectRatio?: ('16:9' | '4:3' | '21:9' | '1:1') | null;
   /**
-   * Primary contact for team communication
+   * Use youtube-nocookie.com domain for enhanced privacy
    */
-  captain: {
-    name: string;
-    email: string;
-    /**
-     * Phone number for tournament communication
-     */
-    phone: string;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "players".
- */
-export interface Player {
-  id: number;
-  firstName: string;
-  lastName: string;
-  displayName?: string | null;
-  /**
-   * Player jersey number (0-99)
-   */
-  jerseyNumber: number;
-  /**
-   * The team this player belongs to
-   */
-  team: number | Team;
-  /**
-   * Player primary position
-   */
-  primaryPosition: 'offence' | 'defence' | 'transition' | 'faceoff' | 'goalie';
-  /**
-   * Player secondary position (optional)
-   */
-  secondaryPosition?: ('offence' | 'defence' | 'transition' | 'faceoff' | 'goalie') | null;
-  /**
-   * Player handedness for stick handling
-   */
-  handedness: 'left' | 'right';
-  /**
-   * Runner or Goalie classification
-   */
-  playerType: 'runner' | 'goalie';
-  /**
-   * Upload player photo (optional)
-   */
-  photo?: (number | null) | Media;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "games".
- */
-export interface Game {
-  id: number;
-  /**
-   * Game number in tournament (e.g., "1", "2", "Pool A1")
-   */
-  gameNumber: string;
-  displayName?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  /**
-   * Pool play (12 min periods) or medal game (15 min periods)
-   */
-  gameType: 'pool' | 'medal';
-  /**
-   * Tournament day (1-3)
-   */
-  day: '1' | '2' | '3';
-  /**
-   * Game start time
-   */
-  scheduledTime: string;
-  /**
-   * Current game status
-   */
-  status: 'scheduled' | 'live' | 'final' | 'overtime';
-  homeTeam: number | Team;
-  awayTeam: number | Team;
-  homeScore?: number | null;
-  awayScore?: number | null;
-  homeStartingGoalie?: (number | null) | Player;
-  awayStartingGoalie?: (number | null) | Player;
-  /**
-   * Current goalie (for tracking changes)
-   */
-  homeCurrentGoalie?: (number | null) | Player;
-  /**
-   * Current goalie (for tracking changes)
-   */
-  awayCurrentGoalie?: (number | null) | Player;
-  /**
-   * Points awarded for each period (1 for win, 0.5 for tie, 0 for loss)
-   */
-  periodPoints?: {
-    period1Home?: number | null;
-    period1Away?: number | null;
-    period2Home?: number | null;
-    period2Away?: number | null;
-    period3Home?: number | null;
-    period3Away?: number | null;
-    totalPeriodHome?: number | null;
-    totalPeriodAway?: number | null;
-  };
-  /**
-   * Points awarded for final game result (2 for win, 1 for tie, 0 for loss)
-   */
-  finalGamePoints?: {
-    home?: number | null;
-    away?: number | null;
-  };
-  /**
-   * Total tournament points for this game (max 5 per team)
-   */
-  totalGamePoints?: {
-    home?: number | null;
-    away?: number | null;
-  };
-  /**
-   * 12 for pool play, 15 for medal games
-   */
-  periodLength?: number | null;
-  currentPeriod?: ('0' | '1' | '2' | '3' | 'OT1' | 'OT2' | 'OT3') | null;
-  /**
-   * Time remaining in current period
-   */
-  periodTimeRemaining?: number | null;
-  /**
-   * Only medal games allow overtime
-   */
-  overtimeAllowed?: boolean | null;
-  /**
-   * Live stream URL for this game
-   */
-  youtubeUrl?: string | null;
-  /**
-   * Post-game recognition (selected immediately after game)
-   */
-  threeStars?: {
-    first?: (number | null) | Player;
-    second?: (number | null) | Player;
-    third?: (number | null) | Player;
-  };
-  updatedAt: string;
-  createdAt: string;
+  privacyEnhanced?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'youtubeEmbed';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1692,6 +1905,8 @@ export interface PagesSelect<T extends boolean = true> {
                     newTab?: T;
                     reference?: T;
                     url?: T;
+                    customPath?: T;
+                    hash?: T;
                     label?: T;
                     appearance?: T;
                   };
@@ -1705,10 +1920,12 @@ export interface PagesSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
+        heroBanner?: T | HeroBannerBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         tournamentInfo?: T | TournamentInfoBlockSelect<T>;
         rules?: T | RulesBlockSelect<T>;
+        youtubeEmbed?: T | YouTubeEmbedSelect<T>;
       };
   meta?:
     | T
@@ -1740,6 +1957,8 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
               newTab?: T;
               reference?: T;
               url?: T;
+              customPath?: T;
+              hash?: T;
               label?: T;
               appearance?: T;
             };
@@ -1766,6 +1985,8 @@ export interface ContentBlockSelect<T extends boolean = true> {
               newTab?: T;
               reference?: T;
               url?: T;
+              customPath?: T;
+              hash?: T;
               label?: T;
               appearance?: T;
             };
@@ -1780,6 +2001,49 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBannerBlock_select".
+ */
+export interface HeroBannerBlockSelect<T extends boolean = true> {
+  backgroundImage?: T;
+  announcementBadge?:
+    | T
+    | {
+        text?: T;
+        linkText?: T;
+        linkUrl?: T;
+      };
+  heading?: T;
+  subheading?: T;
+  primaryCTA?:
+    | T
+    | {
+        text?: T;
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        customPath?: T;
+        hash?: T;
+        appearance?: T;
+      };
+  secondaryCTA?:
+    | T
+    | {
+        text?: T;
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        customPath?: T;
+        hash?: T;
+        appearance?: T;
+      };
+  enableGradientOverlay?: T;
   id?: T;
   blockName?: T;
 }
@@ -1853,6 +2117,21 @@ export interface RulesBlockSelect<T extends boolean = true> {
         id?: T;
       };
   additionalInfo?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "YouTubeEmbed_select".
+ */
+export interface YouTubeEmbedSelect<T extends boolean = true> {
+  url?: T;
+  title?: T;
+  autoplay?: T;
+  muted?: T;
+  showControls?: T;
+  aspectRatio?: T;
+  privacyEnhanced?: T;
   id?: T;
   blockName?: T;
 }
@@ -2507,6 +2786,133 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: number;
+  /**
+   * Upload the Cowtown Showdown logo
+   */
+  logo?: (number | null) | Media;
+  headerColumns?:
+    | {
+        /**
+         * Create the title for the header column. Enable link if this column should be clickable.
+         */
+        title: {
+          title: string;
+          enableLink?: boolean | null;
+          link?: {
+            type?: ('reference' | 'custom') | null;
+            newTab?: boolean | null;
+            reference?:
+              | ({
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null)
+              | ({
+                  relationTo: 'posts';
+                  value: number | Post;
+                } | null)
+              | ({
+                  relationTo: 'teams';
+                  value: number | Team;
+                } | null)
+              | ({
+                  relationTo: 'games';
+                  value: number | Game;
+                } | null);
+            url?: string | null;
+            /**
+             * For internal paths like /about or /contact
+             */
+            customPath?: string | null;
+            /**
+             * URL hash for page sections (e.g., #contact)
+             */
+            hash?: string | null;
+            label: string;
+          };
+        };
+        /**
+         * Add dropdown menu items for this column
+         */
+        subMenuItems?:
+          | {
+              linkText: string;
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?:
+                  | ({
+                      relationTo: 'pages';
+                      value: number | Page;
+                    } | null)
+                  | ({
+                      relationTo: 'posts';
+                      value: number | Post;
+                    } | null)
+                  | ({
+                      relationTo: 'teams';
+                      value: number | Team;
+                    } | null)
+                  | ({
+                      relationTo: 'games';
+                      value: number | Game;
+                    } | null);
+                url?: string | null;
+                /**
+                 * For internal paths like /about or /contact
+                 */
+                customPath?: string | null;
+                /**
+                 * URL hash for page sections (e.g., #contact)
+                 */
+                hash?: string | null;
+                label: string;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Call to action button displayed in the header
+   */
+  cta: {
+    ctaText: string;
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: number | Post;
+          } | null)
+        | ({
+            relationTo: 'teams';
+            value: number | Team;
+          } | null)
+        | ({
+            relationTo: 'games';
+            value: number | Game;
+          } | null);
+      url?: string | null;
+      /**
+       * For internal paths like /about or /contact
+       */
+      customPath?: string | null;
+      /**
+       * URL hash for page sections (e.g., #contact)
+       */
+      hash?: string | null;
+      label: string;
+    };
+  };
+  /**
+   * Legacy navigation items - consider migrating to Header Columns
+   */
   navItems?:
     | {
         link: {
@@ -2520,8 +2926,24 @@ export interface Header {
             | ({
                 relationTo: 'posts';
                 value: number | Post;
+              } | null)
+            | ({
+                relationTo: 'teams';
+                value: number | Team;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: number | Game;
               } | null);
           url?: string | null;
+          /**
+           * For internal paths like /about or /contact
+           */
+          customPath?: string | null;
+          /**
+           * URL hash for page sections (e.g., #contact)
+           */
+          hash?: string | null;
           label: string;
         };
         id?: string | null;
@@ -2549,8 +2971,24 @@ export interface Footer {
             | ({
                 relationTo: 'posts';
                 value: number | Post;
+              } | null)
+            | ({
+                relationTo: 'teams';
+                value: number | Team;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: number | Game;
               } | null);
           url?: string | null;
+          /**
+           * For internal paths like /about or /contact
+           */
+          customPath?: string | null;
+          /**
+           * URL hash for page sections (e.g., #contact)
+           */
+          hash?: string | null;
           label: string;
         };
         id?: string | null;
@@ -2561,9 +2999,203 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  enableHeroBanner?: boolean | null;
+  heroBanner?: {
+    backgroundImage: number | Media;
+    /**
+     * Optional announcement badge above the main heading
+     */
+    announcementBadge?: {
+      /**
+       * Badge text (e.g., "Live games happening now")
+       */
+      text?: string | null;
+      /**
+       * Link text (e.g., "View live games")
+       */
+      linkText?: string | null;
+      /**
+       * Path to live games page
+       */
+      linkUrl?: string | null;
+    };
+    heading: string;
+    /**
+     * Supporting text below the main heading
+     */
+    subheading?: string | null;
+    primaryCTA: {
+      text: string;
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: number | Post;
+          } | null)
+        | ({
+            relationTo: 'teams';
+            value: number | Team;
+          } | null)
+        | ({
+            relationTo: 'games';
+            value: number | Game;
+          } | null);
+      url?: string | null;
+      /**
+       * For internal paths like /about or /contact
+       */
+      customPath?: string | null;
+      /**
+       * URL hash for page sections (e.g., #contact)
+       */
+      hash?: string | null;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+    secondaryCTA?: {
+      text?: string | null;
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: number | Post;
+          } | null)
+        | ({
+            relationTo: 'teams';
+            value: number | Team;
+          } | null)
+        | ({
+            relationTo: 'games';
+            value: number | Game;
+          } | null);
+      url?: string | null;
+      /**
+       * For internal paths like /about or /contact
+       */
+      customPath?: string | null;
+      /**
+       * URL hash for page sections (e.g., #contact)
+       */
+      hash?: string | null;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+    /**
+     * Adds a dark gradient overlay to improve text readability
+     */
+    enableGradientOverlay?: boolean | null;
+  };
+  enableLiveStream?: boolean | null;
+  liveStream?: {
+    /**
+     * Title displayed above the video embed
+     */
+    title?: string | null;
+    /**
+     * Full YouTube URL (e.g., https://www.youtube.com/watch?v=... or https://youtu.be/...)
+     */
+    youtubeUrl: string;
+    /**
+     * Autoplay requires video to be muted
+     */
+    autoplay?: boolean | null;
+    /**
+     * Start video muted (required for autoplay)
+     */
+    muted?: boolean | null;
+    showControls?: boolean | null;
+    aspectRatio?: ('16:9' | '4:3' | '21:9') | null;
+    /**
+     * Uses youtube-nocookie.com domain for enhanced privacy
+     */
+    privacyEnhanced?: boolean | null;
+  };
+  showLiveGames?: boolean | null;
+  showUpcomingGames?: boolean | null;
+  showStandings?: boolean | null;
+  showRecentGames?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  logo?: T;
+  headerColumns?:
+    | T
+    | {
+        title?:
+          | T
+          | {
+              title?: T;
+              enableLink?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    customPath?: T;
+                    hash?: T;
+                    label?: T;
+                  };
+            };
+        subMenuItems?:
+          | T
+          | {
+              linkText?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    customPath?: T;
+                    hash?: T;
+                    label?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        ctaText?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              customPath?: T;
+              hash?: T;
+              label?: T;
+            };
+      };
   navItems?:
     | T
     | {
@@ -2574,6 +3206,8 @@ export interface HeaderSelect<T extends boolean = true> {
               newTab?: T;
               reference?: T;
               url?: T;
+              customPath?: T;
+              hash?: T;
               label?: T;
             };
         id?: T;
@@ -2597,10 +3231,77 @@ export interface FooterSelect<T extends boolean = true> {
               newTab?: T;
               reference?: T;
               url?: T;
+              customPath?: T;
+              hash?: T;
               label?: T;
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  enableHeroBanner?: T;
+  heroBanner?:
+    | T
+    | {
+        backgroundImage?: T;
+        announcementBadge?:
+          | T
+          | {
+              text?: T;
+              linkText?: T;
+              linkUrl?: T;
+            };
+        heading?: T;
+        subheading?: T;
+        primaryCTA?:
+          | T
+          | {
+              text?: T;
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              customPath?: T;
+              hash?: T;
+              appearance?: T;
+            };
+        secondaryCTA?:
+          | T
+          | {
+              text?: T;
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              customPath?: T;
+              hash?: T;
+              appearance?: T;
+            };
+        enableGradientOverlay?: T;
+      };
+  enableLiveStream?: T;
+  liveStream?:
+    | T
+    | {
+        title?: T;
+        youtubeUrl?: T;
+        autoplay?: T;
+        muted?: T;
+        showControls?: T;
+        aspectRatio?: T;
+        privacyEnhanced?: T;
+      };
+  showLiveGames?: T;
+  showUpcomingGames?: T;
+  showStandings?: T;
+  showRecentGames?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

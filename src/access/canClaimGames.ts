@@ -6,5 +6,5 @@ import type { Access } from 'payload'
  * @security Only scorekeepers, admins, and super admins can claim games
  */
 export const canClaimGames: Access = ({ req: { user } }) => {
-  return ['superAdmin', 'admin', 'scorekeeper'].includes(user?.role)
+  return user?.role ? ['superAdmin', 'admin', 'scorekeeper'].includes(user.role) : false
 }

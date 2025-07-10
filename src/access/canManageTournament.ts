@@ -6,5 +6,5 @@ import type { Access } from 'payload'
  * @security Only admins and super admins can manage tournament settings
  */
 export const canManageTournament: Access = ({ req: { user } }) => {
-  return ['superAdmin', 'admin'].includes(user?.role)
+  return user?.role ? ['superAdmin', 'admin'].includes(user.role) : false
 }

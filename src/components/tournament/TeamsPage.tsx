@@ -29,7 +29,7 @@ export function TeamsPage({ teams, players }: TeamsPageProps) {
             Tournament Teams
           </h1>
           <p className="text-lg text-amber-700 max-w-2xl mx-auto">
-            Meet the 8 teams competing in the Cowtown Showdown Senior Men's Box Lacrosse Tournament. 
+            Meet the 8 teams competing in the Cowtown Showdown Senior Men&apos;s Box Lacrosse Tournament. 
             Click on any team to view their full roster and schedule.
           </p>
         </div>

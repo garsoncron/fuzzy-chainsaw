@@ -20,8 +20,8 @@ export default async function HomePage() {
     
     const now = new Date()
     
-    // Fetch tournament data with relationships
-    const [teamsResult, gamesResult] = await Promise.all([
+    // Fetch tournament data with relationships and homepage settings
+    const [teamsResult, gamesResult, homepageSettings] = await Promise.all([
       payload.find({
         collection: 'teams',
         limit: 8,
@@ -37,6 +37,10 @@ export default async function HomePage() {
             in: ['scheduled', 'live', 'final', 'overtime'],
           },
         },
+      }),
+      payload.findGlobal({
+        slug: 'homepage',
+        depth: 2,
       }),
     ])
 
@@ -58,10 +62,11 @@ export default async function HomePage() {
     return (
       <TournamentHomepage
         initialTeams={teamsResult.docs}
-        initialGames={gamesResult.docs}
-        initialLiveGames={liveGames}
-        initialUpcomingGames={upcomingGames}
-        initialRecentGames={recentGames}
+        initialGames={gamesResult.docs as any}
+        initialLiveGames={liveGames as any}
+        initialUpcomingGames={upcomingGames as any}
+        initialRecentGames={recentGames as any}
+        homepageSettings={homepageSettings}
       />
     )
   } catch (error) {
@@ -75,7 +80,7 @@ export default async function HomePage() {
             Cowtown Showdown
           </h1>
           <p className="text-muted-foreground">
-            Sorry, we're having trouble loading the tournament data. Please try again later.
+            Sorry, we&apos;re having trouble loading the tournament data. Please try again later.
           </p>
         </div>
       </div>

@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { broadcastGameUpdate } from '../live/route'
+import { broadcastGameUpdate } from '@/utilities/realtime'
 
 interface PenaltyRequest {
   playerId: string

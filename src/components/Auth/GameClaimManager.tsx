@@ -140,12 +140,12 @@ export function GameClaimManager({
 
   const getGameStatusIcon = (game: Game) => {
     if (game.claimedBy === userId) {
-      return <CheckCircle className=\"h-4 w-4 text-green-600\" />
+      return <CheckCircle className="h-4 w-4 text-green-600" />
     }
     if (game.claimedBy) {
-      return <User className=\"h-4 w-4 text-blue-600\" />
+      return <User className="h-4 w-4 text-blue-600" />
     }
-    return <AlertCircle className=\"h-4 w-4 text-gray-400\" />
+    return <AlertCircle className="h-4 w-4 text-gray-400" />
   }
 
   const getGameStatusText = (game: Game) => {
@@ -172,12 +172,12 @@ export function GameClaimManager({
   if (loading) {
     return (
       <Card className={className}>
-        <CardContent className=\"p-6\">
-          <div className=\"animate-pulse space-y-4\">
-            <div className=\"h-4 bg-gray-200 rounded w-1/4\"></div>
-            <div className=\"space-y-2\">
-              <div className=\"h-3 bg-gray-200 rounded\"></div>
-              <div className=\"h-3 bg-gray-200 rounded w-5/6\"></div>
+        <CardContent className="p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+            <div className="space-y-2">
+              <div className="h-3 bg-gray-200 rounded"></div>
+              <div className="h-3 bg-gray-200 rounded w-5/6"></div>
             </div>
           </div>
         </CardContent>
@@ -188,35 +188,35 @@ export function GameClaimManager({
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle className=\"flex items-center gap-2\">
-          <Clock className=\"h-5 w-5\" />
+        <CardTitle className="flex items-center gap-2">
+          <Clock className="h-5 w-5" />
           Game Management
         </CardTitle>
       </CardHeader>
       <CardContent>
         {error && (
-          <Alert variant=\"destructive\" className=\"mb-4\">
+          <Alert variant="destructive" className="mb-4">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
         
-        <div className=\"space-y-3\">
+        <div className="space-y-3">
           {games.length === 0 ? (
-            <p className=\"text-center text-gray-500 py-4\">
+            <p className="text-center text-gray-500 py-4">
               No games available at this time.
             </p>
           ) : (
             games.map((game) => (
               <div
                 key={game.id}
-                className=\"border rounded-lg p-4 space-y-3\"
+                className="border rounded-lg p-4 space-y-3"
               >
-                <div className=\"flex items-center justify-between\">
+                <div className="flex items-center justify-between">
                   <div>
-                    <h3 className=\"font-semibold\">
+                    <h3 className="font-semibold">
                       Game {game.gameNumber}: {game.homeTeam} vs {game.awayTeam}
                     </h3>
-                    <p className=\"text-sm text-gray-600\">
+                    <p className="text-sm text-gray-600">
                       {formatGameTime(game.scheduledTime)}
                     </p>
                   </div>
@@ -225,19 +225,19 @@ export function GameClaimManager({
                   </Badge>
                 </div>
                 
-                <div className=\"flex items-center justify-between\">
-                  <div className=\"flex items-center gap-2 text-sm\">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm">
                     {getGameStatusIcon(game)}
                     <span>{getGameStatusText(game)}</span>
                   </div>
                   
-                  <div className=\"flex gap-2\">
+                  <div className="flex gap-2">
                     {game.claimedBy === userId ? (
                       <Button
                         onClick={() => handleReleaseGame(game.id)}
                         disabled={claimingGame === game.id}
-                        variant=\"outline\"
-                        size=\"sm\"
+                        variant="outline"
+                        size="sm"
                       >
                         {claimingGame === game.id ? 'Releasing...' : 'Release'}
                       </Button>
@@ -245,15 +245,15 @@ export function GameClaimManager({
                       <Button
                         onClick={() => handleClaimGame(game.id)}
                         disabled={claimingGame === game.id}
-                        size=\"sm\"
+                        size="sm"
                       >
                         {claimingGame === game.id ? 'Claiming...' : 'Claim'}
                       </Button>
                     ) : (
                       <Button
                         disabled
-                        variant=\"outline\"
-                        size=\"sm\"
+                        variant="outline"
+                        size="sm"
                       >
                         Unavailable
                       </Button>
@@ -265,7 +265,7 @@ export function GameClaimManager({
           )}
         </div>
         
-        <div className=\"mt-4 text-xs text-gray-500\">
+        <div className="mt-4 text-xs text-gray-500">
           {userRole === 'scorekeeper' && assignedGames.length > 0 && (
             <p>You are assigned to {assignedGames.length} game(s) this tournament.</p>
           )}

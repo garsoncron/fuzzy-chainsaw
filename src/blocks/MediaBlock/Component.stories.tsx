@@ -395,7 +395,7 @@ export const BlogPostContext: Story = {
           <Story />
           <p>
             The tournament, which has been running for nearly three decades, continues to showcase 
-            the highest level of senior men's lacrosse in Western Canada. This year's event drew 
+            the highest level of senior men&apos;s lacrosse in Western Canada. This year&apos;s event drew 
             over 2,000 spectators and was live-streamed to fans across the country.
           </p>
         </article>
@@ -416,7 +416,7 @@ export const PhotoGalleryContext: Story = {
         <div className="max-w-6xl mx-auto">
           <header className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">2024 Tournament Photo Gallery</h1>
-            <p className="text-muted-foreground">Capturing the best moments from this year's championship weekend</p>
+            <p className="text-muted-foreground">Capturing the best moments from this year&apos;s championship weekend</p>
           </header>
           <Story />
           <div className="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

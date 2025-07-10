@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { addConnection, removeConnection } from '@/utilities/realtime'
 
 interface GameUpdateData {
   id: string
@@ -50,19 +51,6 @@ interface GameUpdateData {
 // Store active SSE connections
 const activeConnections = new Set<ReadableStreamDefaultController>()
 
-// Helper function to broadcast updates to all connected clients
-export function broadcastGameUpdate(gameId: string, data: GameUpdateData) {
-  const message = `data: ${JSON.stringify(data)}\n\n`
-  
-  activeConnections.forEach(controller => {
-    try {
-      controller.enqueue(new TextEncoder().encode(message))
-    } catch (error) {
-      // Remove failed connections
-      activeConnections.delete(controller)
-    }
-  })
-}
 
 export async function GET(
   request: NextRequest,
@@ -90,6 +78,7 @@ export async function GET(
     const stream = new ReadableStream({
       start(controller) {
         activeConnections.add(controller)
+        addConnection(controller)
         
         // Send initial game data
         const sendInitialData = async () => {
@@ -219,6 +208,7 @@ export async function GET(
           clearInterval(interval)
           clearInterval(keepAlive)
           activeConnections.delete(controller)
+          removeConnection(controller)
         }
       },
       cancel() {

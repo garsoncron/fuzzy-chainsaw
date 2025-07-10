@@ -26,7 +26,9 @@ import {
   Wifi,
   WifiOff
 } from 'lucide-react'
-import type { Game, Team } from '@/payload-types'
+import type { Game, Team, Homepage } from '@/payload-types'
+import { SuperheroBannerBlock } from '@/blocks/SuperheroBanner/Component'
+import YouTubeEmbedBlock from '@/blocks/YouTubeEmbed/Component'
 
 export type GameWithTeams = Game & {
   homeTeam: Team
@@ -39,6 +41,7 @@ interface TournamentHomepageProps {
   initialLiveGames: GameWithTeams[]
   initialUpcomingGames: GameWithTeams[]
   initialRecentGames: GameWithTeams[]
+  homepageSettings?: Homepage
 }
 
 export function TournamentHomepage({ 
@@ -46,7 +49,8 @@ export function TournamentHomepage({
   initialGames,
   initialLiveGames,
   initialUpcomingGames,
-  initialRecentGames
+  initialRecentGames,
+  homepageSettings
 }: TournamentHomepageProps) {
   const [teams] = useState<Team[]>(initialTeams)
   const [liveGames, setLiveGames] = useState<GameWithTeams[]>(initialLiveGames)
@@ -98,15 +102,30 @@ export function TournamentHomepage({
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary-brown/10 to-background py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-7xl font-western text-primary-brown mb-4">
-            Cowtown Showdown
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-6">
-            Senior Men's Box Lacrosse Tournament
-          </p>
+      {/* Hero Banner from CMS */}
+      {homepageSettings?.enableHeroBanner && homepageSettings?.heroBanner && (
+        <SuperheroBannerBlock
+          backgroundImage={homepageSettings.heroBanner.backgroundImage}
+          announcementBadge={homepageSettings.heroBanner.announcementBadge}
+          heading={homepageSettings.heroBanner.heading}
+          subheading={homepageSettings.heroBanner.subheading || ''}
+          primaryCTA={homepageSettings.heroBanner.primaryCTA}
+          secondaryCTA={homepageSettings.heroBanner.secondaryCTA}
+          enableGradientOverlay={homepageSettings.heroBanner.enableGradientOverlay}
+          blockType="heroBanner"
+        />
+      )}
+
+      {/* Default Hero Section (shown if CMS hero is disabled) */}
+      {(!homepageSettings?.enableHeroBanner || !homepageSettings?.heroBanner) && (
+        <section className="bg-gradient-to-b from-primary-brown/10 to-background py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-5xl md:text-7xl font-western text-primary-brown mb-4">
+              Cowtown Showdown
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-6">
+              Senior Men&apos;s Box Lacrosse Tournament
+            </p>
           <div className="flex flex-wrap justify-center items-center gap-6 mb-8">
             <div className="flex items-center text-muted-foreground">
               <MapPin className="h-5 w-5 mr-2" />
@@ -154,6 +173,30 @@ export function TournamentHomepage({
           </div>
         </div>
       </section>
+      )}
+
+      {/* YouTube Live Stream Section */}
+      {homepageSettings?.enableLiveStream && homepageSettings?.liveStream?.youtubeUrl && (
+        <section className="container mx-auto px-4 py-12">
+          <div className="max-w-6xl mx-auto">
+            {homepageSettings.liveStream.title && (
+              <h2 className="text-3xl md:text-4xl font-western text-primary-brown text-center mb-8">
+                {homepageSettings.liveStream.title}
+              </h2>
+            )}
+            <YouTubeEmbedBlock
+              url={homepageSettings.liveStream.youtubeUrl}
+              title={homepageSettings.liveStream.title || 'Tournament Live Stream'}
+              autoplay={homepageSettings.liveStream.autoplay}
+              muted={homepageSettings.liveStream.muted}
+              showControls={homepageSettings.liveStream.showControls}
+              aspectRatio={homepageSettings.liveStream.aspectRatio}
+              privacyEnhanced={homepageSettings.liveStream.privacyEnhanced}
+              blockType="youtubeEmbed"
+            />
+          </div>
+        </section>
+      )}
 
       <div className="container mx-auto px-4 py-12">
         {/* Error State */}
@@ -229,7 +272,7 @@ export function TournamentHomepage({
                   {liveGames.map(game => (
                     <GameCard 
                       key={game.id} 
-                      game={game}
+                      game={game as any}
                       showDay={true}
                       className="ring-2 ring-live-indicator"
                     />
@@ -256,7 +299,7 @@ export function TournamentHomepage({
                   {upcomingGames.slice(0, 4).map(game => (
                     <GameCard 
                       key={game.id} 
-                      game={game}
+                      game={game as any}
                       compact={true}
                       showDay={true}
                     />
@@ -283,7 +326,7 @@ export function TournamentHomepage({
                   {recentGames.map(game => (
                     <GameCard 
                       key={game.id} 
-                      game={game}
+                      game={game as any}
                       compact={true}
                       showThreeStars={true}
                     />

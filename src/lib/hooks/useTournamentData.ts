@@ -67,12 +67,31 @@ export function useTournamentData() {
       setData(prev => ({ ...prev, isLoading: true, error: null }))
       
       const [teamsResponse, gamesResponse] = await Promise.all([
-        fetch('/api/teams'),
-        fetch('/api/games')
+        fetch('/api/public/teams', {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }),
+        fetch('/api/public/games', {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
       ])
 
+      // Handle errors (authentication shouldn't be required for public endpoints)
+      if (teamsResponse.status === 401 || gamesResponse.status === 401) {
+        throw new Error('Unexpected authentication error.')
+      }
+
+      if (teamsResponse.status === 403 || gamesResponse.status === 403) {
+        throw new Error('Access denied to tournament data.')
+      }
+
       if (!teamsResponse.ok || !gamesResponse.ok) {
-        throw new Error('Failed to fetch tournament data')
+        const teamsError = teamsResponse.ok ? null : await teamsResponse.text()
+        const gamesError = gamesResponse.ok ? null : await gamesResponse.text()
+        throw new Error(`Failed to fetch tournament data: ${teamsError || gamesError || 'Unknown error'}`)
       }
 
       const [teamsData, gamesData] = await Promise.all([

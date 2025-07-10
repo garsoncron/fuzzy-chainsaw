@@ -13,14 +13,15 @@ interface HeaderProps {
 /**
  * @description Server component wrapper for header with CMS data fetching
  * @dependencies getCachedGlobal utility, HeaderClient component
- * @notes Fetches header navigation data from Payload CMS global
+ * @notes Fetches header navigation data from Payload CMS global with enhanced field structure
+ * Debug mode active - check console for header data structure
  */
 export async function Header({ 
   liveGamesCount, 
   nextGameTime, 
   showLiveIndicator 
 }: HeaderProps = {}) {
-  const headerData: Header = await getCachedGlobal('header', 1)()
+  const headerData: Header = await getCachedGlobal('header', 2)()
 
   return (
     <HeaderClient 

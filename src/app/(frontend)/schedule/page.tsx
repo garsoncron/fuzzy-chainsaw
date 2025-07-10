@@ -75,7 +75,7 @@ export default async function TournamentSchedulePage() {
             Tournament Schedule
           </h1>
           <p className="text-muted-foreground">
-            Sorry, we're having trouble loading the schedule. Please try again later.
+            Sorry, we&apos;re having trouble loading the schedule. Please try again later.
           </p>
         </div>
       </div>

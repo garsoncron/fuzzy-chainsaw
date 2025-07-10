@@ -75,7 +75,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
         condition: (_, siblingData) => siblingData?.type === 'reference',
       },
       label: 'Document to link to',
-      relationTo: ['pages', 'posts'],
+      relationTo: ['pages', 'posts', 'teams', 'games'],
       required: true,
     },
     {
@@ -86,6 +86,24 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       },
       label: 'Custom URL',
       required: true,
+    },
+    {
+      name: 'customPath',
+      type: 'text',
+      admin: {
+        condition: (_, siblingData) => siblingData?.type === 'custom',
+        description: 'For internal paths like /about or /contact',
+      },
+      label: 'Custom Path',
+    },
+    {
+      name: 'hash',
+      type: 'text',
+      admin: {
+        condition: (_, siblingData) => siblingData?.type === 'reference',
+        description: 'URL hash for page sections (e.g., #contact)',
+      },
+      label: 'URL Hash',
     },
   ]
 

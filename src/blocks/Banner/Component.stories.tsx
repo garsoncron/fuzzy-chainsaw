@@ -348,7 +348,7 @@ export const TournamentHomepage: Story = {
               Cowtown Showdown 2024
             </h1>
             <p className="text-muted-foreground">
-              Senior Men's Box Lacrosse Tournament
+              Senior Men&apos;s Box Lacrosse Tournament
             </p>
           </header>
           <Story />

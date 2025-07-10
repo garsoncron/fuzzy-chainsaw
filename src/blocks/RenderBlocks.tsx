@@ -7,8 +7,10 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { SuperheroBannerBlock } from '@/blocks/SuperheroBanner/Component'
 import { TournamentInfo } from '@/blocks/TournamentInfo/Component'
 import { Rules } from '@/blocks/Rules/Component'
+import { YouTubeEmbed } from '@/blocks/YouTubeEmbed/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -16,8 +18,10 @@ const blockComponents = {
   cta: CallToActionBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
+  heroBanner: SuperheroBannerBlock,
   tournamentInfo: TournamentInfo,
   rules: Rules,
+  youtubeEmbed: YouTubeEmbed,
 }
 
 export const RenderBlocks: React.FC<{

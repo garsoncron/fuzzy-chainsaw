@@ -88,14 +88,12 @@ export const Default: Story = {
 }
 
 // Three stars selection dialog
-export const ThreeStarsSelection: Story = {
-  name: 'Tournament: Three Stars Selection',
-  render: () => {
-    const [selectedStars, setSelectedStars] = useState({
-      first: '',
-      second: '',
-      third: '',
-    })
+function ThreeStarsSelectionComponent() {
+  const [selectedStars, setSelectedStars] = useState({
+    first: '',
+    second: '',
+    third: '',
+  })
     
     const players = [
       { id: '1', name: 'Connor McDavid', team: 'Calgary Bears' },
@@ -192,19 +190,21 @@ export const ThreeStarsSelection: Story = {
         </DialogContent>
       </Dialog>
     )
-  },
+}
+
+export const ThreeStarsSelection: Story = {
+  name: 'Tournament: Three Stars Selection',
+  render: () => <ThreeStarsSelectionComponent />,
 }
 
 // Goal recording dialog
-export const GoalRecording: Story = {
-  name: 'Scorekeeper: Goal Recording',
-  render: () => {
-    const [goalData, setGoalData] = useState({
-      scorer: '',
-      assist1: '',
-      assist2: '',
-      goalType: 'even_strength',
-    })
+function GoalRecordingComponent() {
+  const [goalData, setGoalData] = useState({
+    scorer: '',
+    assist1: '',
+    assist2: '',
+    goalType: 'even_strength',
+  })
     
     const homePlayers = [
       { id: '1', name: 'Connor McDavid', number: '97' },
@@ -304,7 +304,11 @@ export const GoalRecording: Story = {
         </DialogContent>
       </Dialog>
     )
-  },
+}
+
+export const GoalRecording: Story = {
+  name: 'Scorekeeper: Goal Recording',
+  render: () => <GoalRecordingComponent />,
 }
 
 // Confirmation dialog
@@ -550,35 +554,37 @@ export const SuccessDialog: Story = {
 }
 
 // Controlled dialog example
+function ControlledDialogComponent() {
+  const [open, setOpen] = useState(false)
+  
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>
+        Open Controlled Dialog
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Controlled Dialog</DialogTitle>
+            <DialogDescription>
+              This dialog is controlled by external state.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <p>Dialog is open: {open ? 'Yes' : 'No'}</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
 export const ControlledDialog: Story = {
   name: 'Controlled Dialog',
-  render: () => {
-    const [open, setOpen] = useState(false)
-    
-    return (
-      <>
-        <Button onClick={() => setOpen(true)}>
-          Open Controlled Dialog
-        </Button>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Controlled Dialog</DialogTitle>
-              <DialogDescription>
-                This dialog is controlled by external state.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="py-4">
-              <p>Dialog is open: {open ? 'Yes' : 'No'}</p>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>
-                Close
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </>
-    )
-  },
+  render: () => <ControlledDialogComponent />,
 }

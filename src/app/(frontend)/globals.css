@@ -133,10 +133,26 @@ html[data-theme='light'] {
 }
 
 /* Tournament Typography */
-@import url('https://fonts.googleapis.com/css2?family=Rye&family=Smokum&display=swap');
+@font-face {
+  font-family: 'TiffanyGothic CC';
+  src: url('/fonts/TiffanyGothicCC.otf') format('opentype'),
+       url('/fonts/TiffanyGothicCC.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TiffanyGothic CC';
+  src: url('/fonts/TiffanyGothicCC.otf') format('opentype'),
+       url('/fonts/TiffanyGothicCC.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
 
 .font-western {
-  font-family: 'Rye', 'Smokum', serif;
+  font-family: 'TiffanyGothic CC', 'Rye', 'Smokum', serif;
 }
 
 /* Tournament Utility Classes */

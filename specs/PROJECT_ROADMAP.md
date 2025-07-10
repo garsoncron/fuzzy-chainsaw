@@ -65,6 +65,7 @@ This roadmap outlines the development phases for the Cowtown Showdown tournament
 3. Build homepage with live scoreboard
 4. Develop schedule and standings pages
 5. Create team listing and profile pages
+6. ✅ Implement YouTube Live embed block for streaming
 
 **Dependencies**:
 - Design assets (fonts, textures, images)
@@ -75,24 +76,28 @@ This roadmap outlines the development phases for the Cowtown Showdown tournament
 - 5 core public pages
 - Responsive layouts
 - Basic navigation
+- ✅ YouTube embed block for live streaming
 
 #### Week 4: Tournament Features & Components
 **Tasks**:
-1. Build game detail pages with live updates
+1. Build game detail pages with live updates and YouTube integration
 2. Create statistics pages and leaderboards
 3. Implement team registration form
 4. Develop all tournament-specific components
 5. Add Payload CMS content blocks
+6. 🔄 Integrate YouTube live streams on homepage for current game
 
 **Dependencies**:
 - Phase 2 Week 3 completion
 - Real-time API endpoints
+- ✅ YouTube embed block
 
 **Deliverables**:
 - Complete public website
 - All tournament UI components
 - Content management blocks
 - Form submissions
+- 🔄 Live stream integration for games
 
 ### Phase 3: Live Scoring & Management (Weeks 5-6)
 
@@ -266,7 +271,7 @@ graph TD
 - [x] Core tournament collections implemented (8/11 collections complete)
   - [x] Teams collection with captain info and branding
   - [x] Players collection with roster management
-  - [x] Games collection with 5-point tournament system
+  - [x] Games collection with 5-point tournament system and YouTube URLs
   - [x] Goals collection with scoring events
   - [x] Penalties collection with RMLL infractions
   - [x] Faceoffs collection for statistics
@@ -275,6 +280,12 @@ graph TD
   - [ ] TeamStaff collection (pending)
   - [ ] GoalieChanges collection (pending)
   - [ ] TournamentYears collection (pending)
+- [x] YouTube Live streaming integration
+  - [x] YouTube embed block for Payload CMS
+  - [x] Responsive video player component
+  - [x] URL validation and video ID extraction
+  - [ ] Game detail pages with streaming
+  - [ ] Homepage live game detection
 - [ ] 30+ API endpoints functional
 - [ ] 8 public pages complete
 - [ ] Scorekeeper interface tested

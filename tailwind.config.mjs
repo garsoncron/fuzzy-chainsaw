@@ -96,6 +96,7 @@ const config = {
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        western: ['TiffanyGothic CC', 'Rye', 'Smokum', 'serif'],
       },
       keyframes: {
         'accordion-down': {

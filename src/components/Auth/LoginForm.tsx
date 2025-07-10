@@ -91,56 +91,56 @@ export function LoginForm({
   }
 
   return (
-    <Card className=\"w-full max-w-md mx-auto\">
-      <CardHeader className=\"space-y-1\">
-        <CardTitle className=\"text-2xl font-bold text-center text-primary-brown\">
+    <Card className="w-full max-w-md mx-auto">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold text-center text-primary-brown">
           {title}
         </CardTitle>
-        <CardDescription className=\"text-center\">
+        <CardDescription className="text-center">
           {description}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className=\"space-y-4\">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <Alert variant=\"destructive\">
+            <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
           
-          <div className=\"space-y-2\">
-            <Label htmlFor=\"email\">Email</Label>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
             <Input
-              id=\"email\"
-              name=\"email\"
-              type=\"email\"
-              placeholder=\"Enter your email\"
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={handleInputChange}
               required
               disabled={isLoading}
-              className=\"w-full\"
+              className="w-full"
             />
           </div>
           
-          <div className=\"space-y-2\">
-            <Label htmlFor=\"password\">Password</Label>
-            <div className=\"relative\">
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <div className="relative">
               <Input
-                id=\"password\"
-                name=\"password\"
+                id="password"
+                name="password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder=\"Enter your password\"
+                placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleInputChange}
                 required
                 disabled={isLoading}
-                className=\"w-full pr-10\"
+                className="w-full pr-10"
               />
               <button
-                type=\"button\"
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className=\"absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700\"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                 disabled={isLoading}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
@@ -150,25 +150,25 @@ export function LoginForm({
           </div>
           
           <Button
-            type=\"submit\"
-            className=\"w-full\"
+            type="submit"
+            className="w-full"
             disabled={isLoading}
           >
             {isLoading ? (
               <>
-                <div className=\"animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2\" />
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
                 Signing in...
               </>
             ) : (
               <>
-                <LogIn className=\"mr-2 h-4 w-4\" />
+                <LogIn className="mr-2 h-4 w-4" />
                 Sign In
               </>
             )}
           </Button>
         </form>
         
-        <div className=\"mt-4 text-center text-sm text-gray-600\">
+        <div className="mt-4 text-center text-sm text-gray-600">
           <p>Need help? Contact the tournament administrators.</p>
         </div>
       </CardContent>

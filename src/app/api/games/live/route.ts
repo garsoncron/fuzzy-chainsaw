@@ -20,12 +20,15 @@ setInterval(() => {
     try {
       // Test if connection is still active
       controller.enqueue('data: ping\n\n')
-    } catch (error) {
+    } catch (_error) {
       toRemove.push(controller)
     }
   })
   
-  toRemove.forEach(controller => connections.delete(controller))
+  toRemove.forEach(controller => {
+    connections.delete(controller)
+    removeConnection(controller)
+  })
 }, 30000) // Clean up every 30 seconds
 
 export async function GET(request: NextRequest) {
@@ -39,6 +42,7 @@ export async function GET(request: NextRequest) {
     start(controller) {
       streamController = controller
       connections.add(controller)
+      addConnection(controller)
       
       // Send initial connection message
       controller.enqueue('data: {"type":"connected","timestamp":"' + new Date().toISOString() + '"}\n\n')
@@ -51,7 +55,7 @@ export async function GET(request: NextRequest) {
             game: data,
             timestamp: new Date().toISOString()
           })}\n\n`)
-        }).catch(error => {
+        }).catch(_error => {
           controller.enqueue(`data: ${JSON.stringify({
             type: 'error',
             message: 'Failed to load initial game data',
@@ -64,6 +68,7 @@ export async function GET(request: NextRequest) {
     cancel() {
       if (streamController) {
         connections.delete(streamController)
+        removeConnection(streamController)
       }
     }
   })
@@ -97,80 +102,5 @@ async function getInitialGameData(gameId: string) {
   }
 }
 
-// Broadcast function to send updates to all connected clients
-export async function broadcastGameUpdate(gameId: string, updateData: any) {
-  const message = JSON.stringify({
-    type: 'game_update',
-    gameId,
-    data: updateData,
-    timestamp: new Date().toISOString()
-  })
-  
-  const toRemove: ReadableStreamDefaultController[] = []
-  
-  connections.forEach(controller => {
-    try {
-      controller.enqueue(`data: ${message}\n\n`)
-    } catch (error) {
-      toRemove.push(controller)
-    }
-  })
-  
-  // Remove failed connections
-  toRemove.forEach(controller => connections.delete(controller))
-}
-
-// Broadcast scoreboard updates
-export async function broadcastScoreboardUpdate() {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    
-    // Get all games with their teams
-    const games = await payload.find({
-      collection: 'games',
-      depth: 2,
-      limit: 100,
-      sort: 'scheduledTime',
-      where: {
-        or: [
-          { status: { equals: 'live' } },
-          { status: { equals: 'overtime' } },
-          { status: { equals: 'scheduled' } },
-          {
-            and: [
-              { status: { equals: 'final' } },
-              {
-                scheduledTime: {
-                  greater_than: new Date(Date.now() - 6 * 60 * 60 * 1000) // Last 6 hours
-                }
-              }
-            ]
-          }
-        ]
-      }
-    })
-    
-    const message = JSON.stringify({
-      type: 'scoreboard_update',
-      games: games.docs,
-      timestamp: new Date().toISOString()
-    })
-    
-    const toRemove: ReadableStreamDefaultController[] = []
-    
-    connections.forEach(controller => {
-      try {
-        controller.enqueue(`data: ${message}\n\n`)
-      } catch (error) {
-        toRemove.push(controller)
-      }
-    })
-    
-    // Remove failed connections
-    toRemove.forEach(controller => connections.delete(controller))
-    
-    console.log(`Broadcasted scoreboard update to ${connections.size} clients`)
-  } catch (error) {
-    console.error('Error broadcasting scoreboard update:', error)
-  }
-}
+// Import broadcast functions from utilities
+import { addConnection, removeConnection } from '@/utilities/realtime'

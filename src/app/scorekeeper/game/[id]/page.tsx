@@ -6,6 +6,7 @@
  */
 
 import { redirect, notFound } from 'next/navigation'
+import Link from 'next/link'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { getCurrentUser } from '@/lib/auth'
@@ -67,12 +68,12 @@ export default async function GameScoringPage({ params }: PageProps) {
             <p className="text-muted-foreground mb-6">
               You are not assigned to this game. Please claim the game first from the dashboard.
             </p>
-            <a
+            <Link
               href="/scorekeeper"
               className="inline-flex items-center justify-center rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
               Return to Dashboard
-            </a>
+            </Link>
           </div>
         </div>
       )

@@ -6,5 +6,5 @@ import type { Access } from 'payload'
  * @security Only authenticated users with appropriate roles can manage games
  */
 export const canManageGames: Access = ({ req: { user } }) => {
-  return ['superAdmin', 'admin', 'scorekeeper'].includes(user?.role)
+  return user?.role ? ['superAdmin', 'admin', 'scorekeeper'].includes(user.role) : false
 }

@@ -248,7 +248,7 @@ export function TournamentHomepage({
           Cowtown Showdown
         </h1>
         <p className="text-xl text-muted-foreground mb-4">
-          Senior Men's Box Lacrosse Tournament
+          Senior Men&apos;s Box Lacrosse Tournament
         </p>
         <div className="flex justify-center items-center space-x-4 text-sm text-muted-foreground">
           <div className="flex items-center">
@@ -288,7 +288,7 @@ export function TournamentHomepage({
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Calendar className="h-5 w-5 text-primary-brown" />
-                  <span className="font-western text-primary-brown">Today's Games</span>
+                  <span className="font-western text-primary-brown">Today&apos;s Games</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>

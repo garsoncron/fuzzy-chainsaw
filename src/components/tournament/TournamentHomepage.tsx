@@ -159,7 +159,7 @@ export function TournamentHomepage({ teams, games }: TournamentHomepageProps) {
             Cowtown Showdown
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-6">
-            Senior Men's Box Lacrosse Tournament
+            Senior Men&apos;s Box Lacrosse Tournament
           </p>
           <div className="flex flex-wrap justify-center items-center gap-6 mb-8">
             <div className="flex items-center text-muted-foreground">

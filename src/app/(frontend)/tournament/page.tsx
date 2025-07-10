@@ -140,7 +140,7 @@ export default async function TournamentPage() {
             Cowtown Showdown
           </h1>
           <p className="text-muted-foreground">
-            Sorry, we're having trouble loading the tournament data. Please try again later.
+            Sorry, we&apos;re having trouble loading the tournament data. Please try again later.
           </p>
         </div>
       </div>

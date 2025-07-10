@@ -374,7 +374,7 @@ export function SchedulePage({
                 </Badge>
               )}
               {searchTerm && (
-                <Badge variant="secondary">"{searchTerm}"</Badge>
+                <Badge variant="secondary">&quot;{searchTerm}&quot;</Badge>
               )}
             </div>
           )}
