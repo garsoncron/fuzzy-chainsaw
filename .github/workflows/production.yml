@@ -1,0 +1,139 @@
+name: Production Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+
+env:
+  NODE_VERSION: '22.x'
+  PNPM_VERSION: '9'
+
+jobs:
+  pre-deployment-checks:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: ${{ env.PNPM_VERSION }}
+        
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Run full test suite
+      run: pnpm test
+      env:
+        DATABASE_URI: postgresql://postgres:postgres@localhost:5432/test_db
+        PAYLOAD_SECRET: test-secret-for-production-ci-minimum-32-characters
+        NEXT_PUBLIC_SERVER_URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL }}
+
+    - name: Security audit
+      run: pnpm audit --audit-level high
+
+    - name: Build production bundle
+      run: pnpm build
+      env:
+        DATABASE_URI: ${{ secrets.DATABASE_URI }}
+        PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+        NEXT_PUBLIC_SERVER_URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL }}
+
+    - name: Check environment variables
+      run: |
+        echo "Verifying required environment variables are set..."
+        if [ -z "${{ secrets.DATABASE_URI }}" ]; then
+          echo "❌ DATABASE_URI not set"
+          exit 1
+        fi
+        if [ -z "${{ secrets.PAYLOAD_SECRET }}" ]; then
+          echo "❌ PAYLOAD_SECRET not set"
+          exit 1
+        fi
+        if [ -z "${{ secrets.NEXT_PUBLIC_SERVER_URL }}" ]; then
+          echo "❌ NEXT_PUBLIC_SERVER_URL not set"
+          exit 1
+        fi
+        echo "✅ All required environment variables are set"
+
+  deploy-vercel:
+    needs: pre-deployment-checks
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        vercel-args: '--prod'
+        
+  deploy-railway:
+    needs: pre-deployment-checks
+    runs-on: ubuntu-latest
+    if: success() && false  # Disabled by default - enable one deployment method
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Deploy to Railway
+      uses: bervProject/railway-deploy@v1.0.0
+      with:
+        railway_token: ${{ secrets.RAILWAY_TOKEN }}
+        service: ${{ secrets.RAILWAY_SERVICE }}
+        
+  post-deployment:
+    needs: [deploy-vercel]  # Or deploy-railway if using Railway
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: Health check
+      run: |
+        echo "Performing post-deployment health checks..."
+        sleep 30  # Wait for deployment to stabilize
+        
+        # Basic health check
+        curl -f ${{ secrets.NEXT_PUBLIC_SERVER_URL }}/api/health || exit 1
+        echo "✅ Health check passed"
+        
+        # Check if admin panel is accessible
+        curl -f ${{ secrets.NEXT_PUBLIC_SERVER_URL }}/admin || exit 1
+        echo "✅ Admin panel accessible"
+        
+    - name: Notify team
+      if: success()
+      run: |
+        echo "🚀 Production deployment successful!"
+        echo "URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL }}"
+        # Add Slack/Discord/Email notification here if needed
+        
+    - name: Rollback on failure
+      if: failure()
+      run: |
+        echo "❌ Deployment failed, consider rollback"
+        # Add rollback logic here if needed
