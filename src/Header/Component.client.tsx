@@ -98,7 +98,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Cowtown Showdown</span>
-            {data.logo && typeof data.logo !== 'string' && data.logo.url ? (
+            {data.logo && typeof data.logo === 'object' && data.logo.url ? (
               <Image
                 alt="Cowtown Showdown"
                 src={data.logo.url}
