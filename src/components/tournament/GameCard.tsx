@@ -189,9 +189,6 @@ export function GameCard({
                     <span className="font-semibold text-base">
                       {game.homeTeam.name}
                     </span>
-                    <span className="text-sm text-muted-foreground">
-                      {game.homeTeam.city}
-                    </span>
                   </div>
                   {hasScore && (
                     <span className="text-2xl font-bold text-primary-brown">
@@ -205,9 +202,6 @@ export function GameCard({
                   <div className="flex items-center space-x-2">
                     <span className="font-semibold text-base">
                       {game.awayTeam.name}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {game.awayTeam.city}
                     </span>
                   </div>
                   {hasScore && (

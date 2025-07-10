@@ -23,7 +23,7 @@ type Props = {
  * @accessibility Full ARIA labeling, semantic HTML structure, keyboard navigation
  * @performance Optimized images with Next.js Image component
  */
-export const SuperheroBannerBlock: React.FC<Props> = ({ 
+export const SuperheroBannerBlock: React.FC<Props> = ({
   className,
   disableInnerContainer,
   backgroundImage,
@@ -34,41 +34,43 @@ export const SuperheroBannerBlock: React.FC<Props> = ({
   secondaryCTA,
   enableGradientOverlay = true,
 }) => {
-  const backgroundImageUrl = backgroundImage && typeof backgroundImage === 'object' 
-    ? (backgroundImage as Media).url 
-    : null
+  const backgroundImageUrl =
+    backgroundImage && typeof backgroundImage === 'object' ? (backgroundImage as Media).url : null
 
   return (
-    <div className={cn('bg-gray-900 min-h-screen', className)}>
+    <div className={cn('min-h-screen', className)}>
       <div className="relative isolate overflow-hidden pt-14 min-h-screen">
         {/* Background Image */}
         <Image
           alt=""
-          src={backgroundImageUrl || "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2830&q=80"}
+          src={backgroundImageUrl || '/media/swalm-lax.jpg'}
           fill
           className="absolute inset-0 size-full object-cover"
           priority
           sizes="100vw"
         />
-        
+
         {/* Dark overlay for better contrast */}
         <div className="absolute inset-0 bg-black/40" />
-        
-        {/* Custom Red/White Gradient Overlay from top-left to bottom-right */}
+
+        {/* Custom Orange to Red to Brown Gradient Overlay from top-left to bottom-right */}
         {enableGradientOverlay && (
-          <div 
+          <div
             className="absolute inset-0"
             style={{
-              background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.9) 0%, rgba(239, 68, 68, 0.8) 25%, rgba(248, 113, 113, 0.6) 60%, rgba(255, 255, 255, 0.9) 100%)'
+              background:
+                'linear-gradient(135deg, rgba(251, 146, 60, 0.5) 0%, rgba(239, 68, 68, 0.4) 35%, rgba(220, 38, 38, 0.4) 65%, rgba(120, 53, 15, 0.5) 100%)',
             }}
           />
         )}
-        
+
         {/* Content */}
-        <div className={cn(
-          'relative z-10 mx-auto max-w-7xl px-6 lg:px-8 min-h-screen flex items-center',
-          !disableInnerContainer && 'container'
-        )}>
+        <div
+          className={cn(
+            'relative z-10 mx-auto max-w-7xl px-6 lg:px-8 min-h-screen flex items-center',
+            !disableInnerContainer && 'container',
+          )}
+        >
           <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 w-full">
             {/* Announcement Badge */}
             {announcementBadge?.text && (
@@ -78,7 +80,7 @@ export const SuperheroBannerBlock: React.FC<Props> = ({
                   {announcementBadge.linkText && announcementBadge.linkUrl && (
                     <>
                       {' '}
-                      <Link 
+                      <Link
                         href={announcementBadge.linkUrl}
                         className="font-semibold text-white hover:text-gray-200"
                       >
@@ -100,7 +102,7 @@ export const SuperheroBannerBlock: React.FC<Props> = ({
               <p className="mt-8 text-pretty text-lg font-medium text-white/90 sm:text-xl/8">
                 {subheading}
               </p>
-              
+
               {/* CTA Buttons */}
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 {/* Primary CTA */}
@@ -119,7 +121,9 @@ export const SuperheroBannerBlock: React.FC<Props> = ({
                   <Link
                     href={resolveLinkUrl(secondaryCTA) || '#'}
                     className="text-sm/6 font-semibold text-white"
-                    {...(secondaryCTA.newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    {...(secondaryCTA.newTab
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      : {})}
                   >
                     {secondaryCTA.text}
                     <span aria-hidden="true">→</span>

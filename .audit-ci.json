@@ -1,0 +1,10 @@
+{
+  "allowlist": [],
+  "low": false,
+  "moderate": false,
+  "high": true,
+  "critical": true,
+  "report-type": "summary",
+  "package-manager": "pnpm",
+  "path": "./package.json"
+}

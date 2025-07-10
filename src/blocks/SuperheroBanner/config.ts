@@ -1,4 +1,4 @@
-import type { Block } from 'payload'
+import type { Block, GroupField } from 'payload'
 import { link } from '@/fields/link'
 
 export const SuperheroBanner: Block = {
@@ -18,7 +18,6 @@ export const SuperheroBanner: Block = {
     {
       name: 'announcementBadge',
       type: 'group',
-      dbName: 'announcement',
       fields: [
         {
           name: 'text',
@@ -66,7 +65,6 @@ export const SuperheroBanner: Block = {
     {
       name: 'primaryCTA',
       type: 'group',
-      dbName: 'primary_cta',
       fields: [
         {
           name: 'text',
@@ -76,7 +74,7 @@ export const SuperheroBanner: Block = {
             description: 'Primary button text (e.g., "View Tournament")',
           },
         },
-        ...link({ disableLabel: true }).fields,
+        ...(link({ disableLabel: true }) as GroupField).fields,
       ],
       admin: {
         description: 'Primary call-to-action button',
@@ -85,7 +83,6 @@ export const SuperheroBanner: Block = {
     {
       name: 'secondaryCTA',
       type: 'group',
-      dbName: 'secondary_cta',
       fields: [
         {
           name: 'text',
@@ -94,7 +91,7 @@ export const SuperheroBanner: Block = {
             description: 'Secondary link text (e.g., "Learn more")',
           },
         },
-        ...link({ disableLabel: true }).fields,
+        ...(link({ disableLabel: true }) as GroupField).fields,
       ],
       admin: {
         description: 'Optional secondary call-to-action link',

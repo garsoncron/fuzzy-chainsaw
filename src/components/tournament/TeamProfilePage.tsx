@@ -55,7 +55,7 @@ export function TeamProfilePage({ team, players, games }: TeamProfilePageProps) 
           <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8">
             {/* Team Logo */}
             <div className="flex-shrink-0">
-              {team.logo && typeof team.logo === 'object' && team.logo.url ? (
+{team.logo && typeof team.logo === 'object' && team.logo.url && (
                 <Image
                   src={team.logo.url}
                   alt={`${team.name} logo`}
@@ -63,42 +63,13 @@ export function TeamProfilePage({ team, players, games }: TeamProfilePageProps) 
                   height={120}
                   className="rounded-full object-cover"
                 />
-              ) : (
-                <div 
-                  className="w-30 h-30 rounded-full flex items-center justify-center text-white font-bold text-4xl"
-                  style={{ backgroundColor: team.primaryColor || '#934F25' }}
-                >
-                  {team.name.charAt(0)}
-                </div>
               )}
             </div>
 
             {/* Team Info */}
             <div className="flex-1 text-center md:text-left">
               <h1 className="text-4xl font-bold text-amber-900 mb-2">{team.name}</h1>
-              <p className="text-xl text-amber-700 mb-4">{team.city}, {team.province}</p>
               
-              {/* Team Colors */}
-              <div className="flex justify-center md:justify-start space-x-3 mb-4">
-                {team.primaryColor && (
-                  <div className="flex items-center space-x-2">
-                    <div
-                      className="w-6 h-6 rounded-full border-2 border-gray-300"
-                      style={{ backgroundColor: team.primaryColor }}
-                    />
-                    <span className="text-sm text-amber-700">{team.primaryColor}</span>
-                  </div>
-                )}
-                {team.secondaryColor && (
-                  <div className="flex items-center space-x-2">
-                    <div
-                      className="w-6 h-6 rounded-full border-2 border-gray-300"
-                      style={{ backgroundColor: team.secondaryColor }}
-                    />
-                    <span className="text-sm text-amber-700">{team.secondaryColor}</span>
-                  </div>
-                )}
-              </div>
 
               {/* Team Stats */}
               <div className="flex justify-center md:justify-start space-x-6 text-center">
@@ -119,24 +90,6 @@ export function TeamProfilePage({ team, players, games }: TeamProfilePageProps) 
           </div>
         </div>
 
-        {/* Contact Info */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-amber-900 mb-4">Team Captain</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-amber-700 mb-1">Name</label>
-              <p className="text-amber-900">{team.captain.name}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-amber-700 mb-1">Email</label>
-              <p className="text-amber-900">{team.captain.email}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-amber-700 mb-1">Phone</label>
-              <p className="text-amber-900">{team.captain.phone}</p>
-            </div>
-          </div>
-        </div>
 
         {/* Team Roster */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">

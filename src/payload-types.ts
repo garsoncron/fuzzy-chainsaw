@@ -453,6 +453,14 @@ export interface Team {
   slug?: string | null;
   slugLock?: boolean | null;
   /**
+   * Tournament division (Gold or Blue)
+   */
+  division: 'gold' | 'blue';
+  /**
+   * Tournament team identifier (e.g., 1G, 2B)
+   */
+  teamId: string;
+  /**
    * Upload team logo for branding
    */
   logo?: (number | null) | Media;
@@ -2313,6 +2321,8 @@ export interface TeamsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   slugLock?: T;
+  division?: T;
+  teamId?: T;
   logo?: T;
   primaryColor?: T;
   secondaryColor?: T;
@@ -2958,6 +2968,30 @@ export interface Header {
  */
 export interface Footer {
   id: number;
+  landAcknowledgment?: {
+    /**
+     * Show/hide the land acknowledgment section
+     */
+    enabled?: boolean | null;
+    /**
+     * Land acknowledgment text content
+     */
+    text?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
   navItems?:
     | {
         link: {
@@ -3005,7 +3039,7 @@ export interface Homepage {
   id: number;
   enableHeroBanner?: boolean | null;
   heroBanner?: {
-    backgroundImage: number | Media;
+    backgroundImage?: (number | null) | Media;
     /**
      * Optional announcement badge above the main heading
      */
@@ -3023,81 +3057,11 @@ export interface Homepage {
        */
       linkUrl?: string | null;
     };
-    heading: string;
+    heading?: string | null;
     /**
      * Supporting text below the main heading
      */
     subheading?: string | null;
-    primaryCTA: {
-      text: string;
-      type?: ('reference' | 'custom') | null;
-      newTab?: boolean | null;
-      reference?:
-        | ({
-            relationTo: 'pages';
-            value: number | Page;
-          } | null)
-        | ({
-            relationTo: 'posts';
-            value: number | Post;
-          } | null)
-        | ({
-            relationTo: 'teams';
-            value: number | Team;
-          } | null)
-        | ({
-            relationTo: 'games';
-            value: number | Game;
-          } | null);
-      url?: string | null;
-      /**
-       * For internal paths like /about or /contact
-       */
-      customPath?: string | null;
-      /**
-       * URL hash for page sections (e.g., #contact)
-       */
-      hash?: string | null;
-      /**
-       * Choose how the link should be rendered.
-       */
-      appearance?: ('default' | 'outline') | null;
-    };
-    secondaryCTA?: {
-      text?: string | null;
-      type?: ('reference' | 'custom') | null;
-      newTab?: boolean | null;
-      reference?:
-        | ({
-            relationTo: 'pages';
-            value: number | Page;
-          } | null)
-        | ({
-            relationTo: 'posts';
-            value: number | Post;
-          } | null)
-        | ({
-            relationTo: 'teams';
-            value: number | Team;
-          } | null)
-        | ({
-            relationTo: 'games';
-            value: number | Game;
-          } | null);
-      url?: string | null;
-      /**
-       * For internal paths like /about or /contact
-       */
-      customPath?: string | null;
-      /**
-       * URL hash for page sections (e.g., #contact)
-       */
-      hash?: string | null;
-      /**
-       * Choose how the link should be rendered.
-       */
-      appearance?: ('default' | 'outline') | null;
-    };
     /**
      * Adds a dark gradient overlay to improve text readability
      */
@@ -3221,6 +3185,12 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  landAcknowledgment?:
+    | T
+    | {
+        enabled?: T;
+        text?: T;
+      };
   navItems?:
     | T
     | {
@@ -3260,30 +3230,6 @@ export interface HomepageSelect<T extends boolean = true> {
             };
         heading?: T;
         subheading?: T;
-        primaryCTA?:
-          | T
-          | {
-              text?: T;
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              customPath?: T;
-              hash?: T;
-              appearance?: T;
-            };
-        secondaryCTA?:
-          | T
-          | {
-              text?: T;
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              customPath?: T;
-              hash?: T;
-              appearance?: T;
-            };
         enableGradientOverlay?: T;
       };
   enableLiveStream?: T;

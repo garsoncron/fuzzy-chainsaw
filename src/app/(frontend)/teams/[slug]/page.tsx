@@ -104,7 +104,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 
   return {
     title: `${team.name} - Cowtown Showdown`,
-    description: `Team profile for ${team.name} from ${team.city}, ${team.province}. View roster, schedule, and team information for the Cowtown Showdown tournament.`,
-    keywords: [`${team.name}`, `${team.city} lacrosse`, 'team profile', 'tournament roster', 'Cowtown Showdown'],
+    description: `Team profile for ${team.name}. View roster, schedule, and team information for the Cowtown Showdown tournament.`,
+    keywords: [`${team.name}`, 'team profile', 'tournament roster', 'Cowtown Showdown'],
   }
 }

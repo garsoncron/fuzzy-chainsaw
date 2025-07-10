@@ -8,7 +8,7 @@ export const Teams: CollectionConfig = {
   slug: 'teams',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'city', 'province', 'updatedAt'],
+    defaultColumns: ['name', 'division', 'teamId', 'city', 'province', 'updatedAt'],
     group: 'Tournament',
   },
   access: {
@@ -28,6 +28,34 @@ export const Teams: CollectionConfig = {
       },
     },
     ...slugField('name'),
+    {
+      name: 'division',
+      type: 'select',
+      required: true,
+      label: 'Division',
+      options: [
+        {
+          label: 'Gold Division',
+          value: 'gold',
+        },
+        {
+          label: 'Blue Division',
+          value: 'blue',
+        },
+      ],
+      admin: {
+        description: 'Tournament division (Gold or Blue)',
+      },
+    },
+    {
+      name: 'teamId',
+      type: 'text',
+      required: true,
+      label: 'Team ID',
+      admin: {
+        description: 'Tournament team identifier (e.g., 1G, 2B)',
+      },
+    },
     {
       name: 'logo',
       type: 'upload',

@@ -51,7 +51,7 @@ export function useTournamentData() {
     )
     
     const upcoming = games.filter(game => 
-      game.status === 'scheduled' && new Date(game.scheduledTime) > now
+      game.status === 'scheduled'
     ).slice(0, 8)
     
     const recent = games.filter(game => 

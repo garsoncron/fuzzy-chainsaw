@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { superAdminFieldAccess } from '@/access/superAdminFieldAccess'
+import { isAdmin } from '@/access/isAdmin'
 import { link } from '@/fields/link'
 
 export const Homepage: GlobalConfig = {
@@ -7,7 +7,7 @@ export const Homepage: GlobalConfig = {
   label: 'Homepage Settings',
   access: {
     read: () => true,
-    update: superAdminFieldAccess,
+    update: () => true,
   },
   fields: [
     {
@@ -35,7 +35,7 @@ export const Homepage: GlobalConfig = {
                   type: 'upload',
                   relationTo: 'media',
                   label: 'Background Image',
-                  required: true,
+                  required: false,
                 },
                 {
                   name: 'announcementBadge',
@@ -76,7 +76,7 @@ export const Homepage: GlobalConfig = {
                   name: 'heading',
                   type: 'text',
                   label: 'Main Heading',
-                  required: true,
+                  required: false,
                   defaultValue: 'Cowtown Showdown',
                 },
                 {
@@ -87,35 +87,35 @@ export const Homepage: GlobalConfig = {
                     description: 'Supporting text below the main heading',
                   },
                 },
-                {
-                  name: 'primaryCTA',
-                  type: 'group',
-                  label: 'Primary Call to Action',
-                  fields: [
-                    {
-                      name: 'text',
-                      type: 'text',
-                      label: 'Button Text',
-                      required: true,
-                      defaultValue: 'View Schedule',
-                    },
-                    ...link({ disableLabel: true }).fields,
-                  ],
-                },
-                {
-                  name: 'secondaryCTA',
-                  type: 'group',
-                  label: 'Secondary Call to Action',
-                  fields: [
-                    {
-                      name: 'text',
-                      type: 'text',
-                      label: 'Button Text',
-                      defaultValue: 'View Teams',
-                    },
-                    ...link({ disableLabel: true }).fields,
-                  ],
-                },
+                // {
+                //   name: 'primaryCTA',
+                //   type: 'group',
+                //   label: 'Primary Call to Action',
+                //   fields: [
+                //     {
+                //       name: 'text',
+                //       type: 'text',
+                //       label: 'Button Text',
+                //       required: false,
+                //       defaultValue: 'View Schedule',
+                //     },
+                //     ...link({ disableLabel: true }).fields,
+                //   ],
+                // },
+                // {
+                //   name: 'secondaryCTA',
+                //   type: 'group',
+                //   label: 'Secondary Call to Action',
+                //   fields: [
+                //     {
+                //       name: 'text',
+                //       type: 'text',
+                //       label: 'Button Text',
+                //       defaultValue: 'View Teams',
+                //     },
+                //     ...link({ disableLabel: true }).fields,
+                //   ],
+                // },
                 {
                   name: 'enableGradientOverlay',
                   type: 'checkbox',
@@ -161,11 +161,13 @@ export const Homepage: GlobalConfig = {
                   label: 'YouTube URL',
                   required: true,
                   admin: {
-                    description: 'Full YouTube URL (e.g., https://www.youtube.com/watch?v=... or https://youtu.be/...)',
+                    description:
+                      'Full YouTube URL (e.g., https://www.youtube.com/watch?v=... or https://youtu.be/...)',
                   },
-                  validate: (value) => {
+                  validate: (value: string | null | undefined) => {
                     if (!value) return true
-                    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)[\w-]+(&.*)?$/
+                    const youtubeRegex =
+                      /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)[\w-]+(&.*)?$/
                     if (!youtubeRegex.test(value)) {
                       return 'Please enter a valid YouTube URL'
                     }

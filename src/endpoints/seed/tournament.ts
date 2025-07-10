@@ -1,234 +1,1360 @@
 import type { Payload, PayloadRequest } from 'payload'
 
-// Tournament team data with Calgary-inspired team names
+// Real tournament team data for Cowtown Showdown
 const tournamentTeams = [
   {
-    name: 'Calgary Mustangs',
-    slug: 'calgary-mustangs',
-    city: 'Calgary',
-    province: 'Alberta',
-    primaryColor: '#8B4513',
-    secondaryColor: '#DAA520',
-    captain: {
-      name: 'Jake Thompson',
-      email: 'jake.thompson@example.com',
-      phone: '403-555-0101',
-    },
-  },
-  {
-    name: 'Edmonton Stallions',
-    slug: 'edmonton-stallions',
-    city: 'Edmonton',
-    province: 'Alberta',
-    primaryColor: '#2E4057',
-    secondaryColor: '#FF6B35',
-    captain: {
-      name: 'Mike Rodriguez',
-      email: 'mike.rodriguez@example.com',
-      phone: '780-555-0102',
-    },
-  },
-  {
-    name: 'Vancouver Broncos',
-    slug: 'vancouver-broncos',
-    city: 'Vancouver',
-    province: 'British Columbia',
+    name: 'Boston Orca',
+    slug: 'boston-orca',
+    city: 'Boston',
+    province: 'Ontario',
+    division: 'gold',
+    teamId: '2G',
     primaryColor: '#1B4332',
     secondaryColor: '#95D5B2',
     captain: {
-      name: 'David Chen',
-      email: 'david.chen@example.com',
-      phone: '604-555-0103',
+      name: 'Mike Rasmussen',
+      email: 'captain@bostonorca.com',
+      phone: '(555) 123-4567',
     },
   },
   {
-    name: 'Toronto Outlaws',
-    slug: 'toronto-outlaws',
-    city: 'Toronto',
+    name: 'Westbay Bombers',
+    slug: 'westbay-bombers',
+    city: 'Westbay',
     province: 'Ontario',
-    primaryColor: '#800020',
-    secondaryColor: '#FFD700',
+    division: 'gold',
+    teamId: '1G',
+    primaryColor: '#8B4513',
+    secondaryColor: '#DAA520',
     captain: {
-      name: 'Alex Johnson',
-      email: 'alex.johnson@example.com',
-      phone: '416-555-0104',
+      name: 'Chris Statham',
+      email: 'captain@westbaybombers.com',
+      phone: '(555) 234-5678',
     },
   },
   {
-    name: 'Montreal Mavricks',
-    slug: 'montreal-mavricks',
-    city: 'Montreal',
-    province: 'Quebec',
+    name: 'More Dudes',
+    slug: 'more-dudes',
+    city: 'Calgary',
+    province: 'Alberta',
+    division: 'blue',
+    teamId: '3B',
     primaryColor: '#4A148C',
     secondaryColor: '#E1BEE7',
     captain: {
-      name: 'Jean-Pierre Dubois',
-      email: 'jp.dubois@example.com',
-      phone: '514-555-0105',
+      name: 'Murf Butler',
+      email: 'captain@moredudes.com',
+      phone: '(555) 345-6789',
     },
   },
   {
-    name: 'Winnipeg Rangers',
-    slug: 'winnipeg-rangers',
-    city: 'Winnipeg',
-    province: 'Manitoba',
-    primaryColor: '#0D47A1',
-    secondaryColor: '#90CAF9',
+    name: 'Calgary Bears',
+    slug: 'calgary-bears',
+    city: 'Calgary',
+    province: 'Alberta',
+    division: 'gold',
+    teamId: '3G',
+    primaryColor: '#800020',
+    secondaryColor: '#FFD700',
     captain: {
-      name: 'Connor O\'Brien',
-      email: 'connor.obrien@example.com',
-      phone: '204-555-0106',
+      name: 'Team Captain',
+      email: 'captain@calgarybears.com',
+      phone: '(555) 456-7890',
     },
   },
   {
-    name: 'Halifax Hurricanes',
-    slug: 'halifax-hurricanes',
-    city: 'Halifax',
-    province: 'Nova Scotia',
-    primaryColor: '#B71C1C',
-    secondaryColor: '#FFCDD2',
-    captain: {
-      name: 'Sean MacKenzie',
-      email: 'sean.mackenzie@example.com',
-      phone: '902-555-0107',
-    },
-  },
-  {
-    name: 'Saskatchewan Roughriders',
-    slug: 'saskatchewan-roughriders',
-    city: 'Saskatoon',
-    province: 'Saskatchewan',
+    name: 'Rockyview Grizzlies',
+    slug: 'rockyview-grizzlies',
+    city: 'Rockyview',
+    province: 'Alberta',
+    division: 'gold',
+    teamId: '4G',
     primaryColor: '#2E7D32',
     secondaryColor: '#A5D6A7',
     captain: {
-      name: 'Tyler Anderson',
-      email: 'tyler.anderson@example.com',
-      phone: '306-555-0108',
+      name: 'Team Captain',
+      email: 'captain@rockyviewgrizzlies.com',
+      phone: '(555) 567-8901',
+    },
+  },
+  {
+    name: 'Saskatoon Swat',
+    slug: 'saskatoon-swat',
+    city: 'Saskatoon',
+    province: 'Saskatchewan',
+    division: 'blue',
+    teamId: '2B',
+    primaryColor: '#0D47A1',
+    secondaryColor: '#90CAF9',
+    captain: {
+      name: 'Team Captain',
+      email: 'captain@saskatoonswat.com',
+      phone: '(555) 678-9012',
+    },
+  },
+  {
+    name: 'Honcho',
+    slug: 'honcho',
+    city: 'Calgary',
+    province: 'Alberta',
+    division: 'blue',
+    teamId: '1B',
+    primaryColor: '#B71C1C',
+    secondaryColor: '#FFCDD2',
+    captain: {
+      name: 'Pierre Carvalho',
+      email: 'captain@honcho.com',
+      phone: '(555) 789-0123',
+    },
+  },
+  {
+    name: 'Mafia',
+    slug: 'mafia',
+    city: 'Calgary',
+    province: 'Alberta',
+    division: 'blue',
+    teamId: '4B',
+    primaryColor: '#2E4057',
+    secondaryColor: '#FF6B35',
+    captain: {
+      name: 'Team Captain',
+      email: 'captain@mafia.com',
+      phone: '(555) 890-1234',
     },
   },
 ]
 
-// Player names for generating realistic rosters
-const playerNames = {
-  first: [
-    'Jake', 'Mike', 'David', 'Alex', 'Connor', 'Tyler', 'Sean', 'Ryan', 'Matt', 'Josh',
-    'Kyle', 'Brad', 'Nick', 'Chris', 'Adam', 'Ben', 'Luke', 'Jordan', 'Zach', 'Derek',
-    'Trevor', 'Brandon', 'Justin', 'Scott', 'Mark', 'Steve', 'Dan', 'Kevin', 'Jason', 'Eric',
-    'Andrew', 'Nathan', 'Cody', 'Mason', 'Hunter', 'Caleb', 'Owen', 'Ethan', 'Cole', 'Blake',
-  ],
-  last: [
-    'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
-    'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
-    'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
-    'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
-  ],
+// Real player roster data
+const tournamentPlayers = [
+  // Boston Orca (2G)
+  {
+    firstName: 'Mike',
+    lastName: 'Rasmussen',
+    jerseyNumber: 1,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+    isCaptain: true,
+  },
+  {
+    firstName: 'Taryn',
+    lastName: 'Smyth',
+    jerseyNumber: 3,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Joe',
+    lastName: 'Barndollar',
+    jerseyNumber: 7,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Darnel',
+    lastName: 'Kofi',
+    jerseyNumber: 10,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dustin',
+    lastName: 'Herman',
+    jerseyNumber: 14,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Scott',
+    lastName: 'Carveth',
+    jerseyNumber: 22,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Emerson',
+    lastName: 'Stevens',
+    jerseyNumber: 24,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Toby',
+    lastName: 'Oickle',
+    jerseyNumber: 28,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dean',
+    lastName: 'Wiebe',
+    jerseyNumber: 36,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Morgan',
+    lastName: 'McIntosh',
+    jerseyNumber: 42,
+    teamId: '2G',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Shaun',
+    lastName: 'Bouvier',
+    jerseyNumber: 44,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Nick',
+    lastName: 'Vazquez',
+    jerseyNumber: 77,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Mark',
+    lastName: 'Colella',
+    jerseyNumber: 80,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Liam',
+    lastName: 'Ball',
+    jerseyNumber: 81,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Levi',
+    lastName: 'Danylyshen',
+    jerseyNumber: 82,
+    teamId: '2G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+
+  // Westbay Bombers (1G)
+  {
+    firstName: 'Chris',
+    lastName: 'Statham',
+    jerseyNumber: 4,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+    isCaptain: true,
+  },
+  {
+    firstName: 'Vince',
+    lastName: 'Cree',
+    jerseyNumber: 6,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Adam',
+    lastName: 'Vincent',
+    jerseyNumber: 10,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Joey',
+    lastName: 'Cheetham',
+    jerseyNumber: 17,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Leon',
+    lastName: 'Henhawk',
+    jerseyNumber: 18,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dan',
+    lastName: 'Fitzxhenry',
+    jerseyNumber: 19,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+    isAlternateCaptain: true,
+  },
+  {
+    firstName: 'Teha',
+    lastName: 'Diabo',
+    jerseyNumber: 21,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Patrick',
+    lastName: 'Poirier',
+    jerseyNumber: 22,
+    teamId: '1G',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dan',
+    lastName: 'Wheeler',
+    jerseyNumber: 33,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Cody',
+    lastName: 'Laforme',
+    jerseyNumber: 43,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+    isAlternateCaptain: true,
+  },
+  {
+    firstName: 'Alex',
+    lastName: 'Kruse',
+    jerseyNumber: 88,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+    isAlternateCaptain: true,
+  },
+  {
+    firstName: 'Marc Antoine',
+    lastName: 'Poirier',
+    jerseyNumber: 89,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Simon',
+    lastName: 'Desy',
+    jerseyNumber: 93,
+    teamId: '1G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+
+  // More Dudes (3B) - Missing data, will add placeholders
+  {
+    firstName: 'Murf',
+    lastName: 'Butler',
+    jerseyNumber: 1,
+    teamId: '3B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+    isCaptain: true,
+  },
+  {
+    firstName: 'Craig',
+    lastName: 'William',
+    jerseyNumber: 2,
+    teamId: '3B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+
+  // Calgary Bears (3G)
+  {
+    firstName: 'Taryn',
+    lastName: 'Smyth',
+    jerseyNumber: 3,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Brett',
+    lastName: 'Buffalo',
+    jerseyNumber: 9,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Kyle',
+    lastName: 'Thomas',
+    jerseyNumber: 12,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Evan',
+    lastName: 'Meyer',
+    jerseyNumber: 13,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Cam',
+    lastName: 'McIntosh',
+    jerseyNumber: 16,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Mark',
+    lastName: 'Wilson',
+    jerseyNumber: 19,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Bobby',
+    lastName: 'Whitford',
+    jerseyNumber: 21,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Carson',
+    lastName: 'Gron',
+    jerseyNumber: 29,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Sean',
+    lastName: 'Campbell',
+    jerseyNumber: 30,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'John',
+    lastName: 'Swalm',
+    jerseyNumber: 31,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Samir',
+    lastName: 'Tirmizi',
+    jerseyNumber: 32,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dylan',
+    lastName: 'Jameson',
+    jerseyNumber: 45,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Justin',
+    lastName: 'McAdam',
+    jerseyNumber: 66,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Zach',
+    lastName: 'Mudryk',
+    jerseyNumber: 81,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Silas',
+    lastName: 'McAdam',
+    jerseyNumber: 91,
+    teamId: '3G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+
+  // Rockyview Grizzlies (4G)
+  {
+    firstName: 'Andrew',
+    lastName: 'Simon',
+    jerseyNumber: 1,
+    teamId: '4G',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Max',
+    lastName: 'Pocherwny',
+    jerseyNumber: 6,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'John',
+    lastName: 'Millar',
+    jerseyNumber: 8,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Kent',
+    lastName: 'Dekker',
+    jerseyNumber: 9,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Jason',
+    lastName: 'Dosdall',
+    jerseyNumber: 11,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Grayson',
+    lastName: 'Martens',
+    jerseyNumber: 13,
+    teamId: '4G',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Cole',
+    lastName: 'Kirker',
+    jerseyNumber: 14,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Sam',
+    lastName: 'Morris',
+    jerseyNumber: 16,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Steven',
+    lastName: 'Flaman',
+    jerseyNumber: 18,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Collin',
+    lastName: 'Koski',
+    jerseyNumber: 19,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Gord',
+    lastName: 'Uddin',
+    jerseyNumber: 21,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Jaycee',
+    lastName: 'Zeer',
+    jerseyNumber: 22,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Adam',
+    lastName: 'Jones',
+    jerseyNumber: 23,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Chace',
+    lastName: 'Natt',
+    jerseyNumber: 37,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Cam',
+    lastName: 'Smith',
+    jerseyNumber: 39,
+    teamId: '4G',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Joey',
+    lastName: 'Larmore',
+    jerseyNumber: 51,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Allen',
+    lastName: 'Fowkes',
+    jerseyNumber: 55,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Owen',
+    lastName: 'Kirchner',
+    jerseyNumber: 69,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Jeff',
+    lastName: 'Skippen',
+    jerseyNumber: 79,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Riley',
+    lastName: 'Zeer',
+    jerseyNumber: 88,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Murphy',
+    lastName: 'Unknown',
+    jerseyNumber: 90,
+    teamId: '4G',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+
+  // Saskatoon Swat (2B)
+  {
+    firstName: 'Adam',
+    lastName: 'Saunders',
+    jerseyNumber: 1,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Austin',
+    lastName: 'Butler',
+    jerseyNumber: 2,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Chris',
+    lastName: 'Lukash',
+    jerseyNumber: 3,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Darcy',
+    lastName: 'Leach',
+    jerseyNumber: 4,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dayton',
+    lastName: 'Jones',
+    jerseyNumber: 5,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Diilon',
+    lastName: 'Holzer',
+    jerseyNumber: 6,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Drew',
+    lastName: 'Dzaidyk',
+    jerseyNumber: 7,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Jason',
+    lastName: 'Procyshyn',
+    jerseyNumber: 8,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Keagan',
+    lastName: 'White',
+    jerseyNumber: 9,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Kenny',
+    lastName: 'Elliott',
+    jerseyNumber: 10,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Matt',
+    lastName: 'Saunders',
+    jerseyNumber: 11,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Matthew',
+    lastName: 'St Germaine',
+    jerseyNumber: 12,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Pat',
+    lastName: 'Mallough',
+    jerseyNumber: 13,
+    teamId: '2B',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Ryan',
+    lastName: 'Schuyler',
+    jerseyNumber: 14,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Shaan',
+    lastName: 'Jones',
+    jerseyNumber: 15,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Stephan',
+    lastName: 'Downs',
+    jerseyNumber: 16,
+    teamId: '2B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+
+  // Honcho (1B)
+  {
+    firstName: 'Jaden',
+    lastName: 'Bouvier',
+    jerseyNumber: 2,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Shipman',
+    lastName: 'Unknown',
+    jerseyNumber: 3,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'David',
+    lastName: 'Manchild Jones',
+    jerseyNumber: 4,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Ron',
+    lastName: 'Morash',
+    jerseyNumber: 5,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Pat',
+    lastName: 'Henry',
+    jerseyNumber: 7,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Gareth',
+    lastName: 'Barley',
+    jerseyNumber: 8,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dekker',
+    lastName: 'Unknown',
+    jerseyNumber: 9,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Kyle',
+    lastName: 'Zanski',
+    jerseyNumber: 10,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Troy',
+    lastName: 'Loper',
+    jerseyNumber: 12,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Pierre',
+    lastName: 'Carvalho',
+    jerseyNumber: 16,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+    isCaptain: true,
+  },
+  {
+    firstName: 'Skylar',
+    lastName: 'Running Rabbit',
+    jerseyNumber: 19,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dave',
+    lastName: 'Grant',
+    jerseyNumber: 22,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Dan',
+    lastName: 'Martin',
+    jerseyNumber: 24,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Brendin',
+    lastName: 'Running Rabbit',
+    jerseyNumber: 25,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Kalem',
+    lastName: 'Jenkins',
+    jerseyNumber: 33,
+    teamId: '1B',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Cam',
+    lastName: 'Smith',
+    jerseyNumber: 39,
+    teamId: '1B',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Jordan',
+    lastName: 'Lypchuk',
+    jerseyNumber: 42,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Sheridan',
+    lastName: 'Cook',
+    jerseyNumber: 43,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Tyrell',
+    lastName: 'Unknown',
+    jerseyNumber: 44,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Lou',
+    lastName: 'LaBrash',
+    jerseyNumber: 70,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Kory',
+    lastName: 'Hoover',
+    jerseyNumber: 74,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Greg',
+    lastName: 'Bradley',
+    jerseyNumber: 77,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Hartford',
+    lastName: 'Unknown',
+    jerseyNumber: 94,
+    teamId: '1B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+
+  // Mafia (4B)
+  {
+    firstName: 'Jake',
+    lastName: 'Gyman',
+    jerseyNumber: 5,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Lundyn',
+    lastName: 'Kups',
+    jerseyNumber: 7,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Justin',
+    lastName: 'Hoffman',
+    jerseyNumber: 9,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'River',
+    lastName: 'Lafferty',
+    jerseyNumber: 11,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Max',
+    lastName: 'Boss',
+    jerseyNumber: 13,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Laine',
+    lastName: 'Denoncourt',
+    jerseyNumber: 17,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Bailey',
+    lastName: 'McCartney',
+    jerseyNumber: 19,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Bailey',
+    lastName: 'Bechtold',
+    jerseyNumber: 21,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Seamore',
+    lastName: 'Butz',
+    jerseyNumber: 22,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Mike',
+    lastName: 'Dudley',
+    jerseyNumber: 26,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Mike',
+    lastName: 'Rotch',
+    jerseyNumber: 27,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Tanner',
+    lastName: 'Schier',
+    jerseyNumber: 36,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Marcelo',
+    lastName: 'Bose',
+    jerseyNumber: 41,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Kayde',
+    lastName: 'Shymko',
+    jerseyNumber: 69,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Grayson',
+    lastName: 'Stevenson',
+    jerseyNumber: 74,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Lukas',
+    lastName: 'Salikin',
+    jerseyNumber: 97,
+    teamId: '4B',
+    primaryPosition: 'offence',
+    playerType: 'runner',
+    handedness: 'right',
+  },
+  {
+    firstName: 'Kayden',
+    lastName: 'Dudley',
+    jerseyNumber: 99,
+    teamId: '4B',
+    primaryPosition: 'goalie',
+    playerType: 'goalie',
+    handedness: 'right',
+  },
+]
+
+// Real tournament schedule (converting your JSON to correct format)
+function parseTimeToDate(timeString: string, day: number): Date {
+  // Parse "12:00-12:45pm" format
+  const [startTime] = timeString.split('-')
+  const [time, period] = startTime.includes('pm') || startTime.includes('am') 
+    ? [startTime.replace(/[ap]m/, ''), startTime.includes('pm') ? 'pm' : 'am']
+    : [startTime, 'am']
+  
+  const [hours, minutes] = time.split(':').map(Number)
+  const hour24 = period === 'pm' && hours !== 12 ? hours + 12 : (period === 'am' && hours === 12 ? 0 : hours)
+  
+  // Set tournament dates (August 2025)
+  const tournamentDate = new Date('2025-08-15T00:00:00-06:00') // MST timezone
+  tournamentDate.setDate(tournamentDate.getDate() + (day - 1))
+  tournamentDate.setHours(hour24, minutes || 0, 0, 0)
+  
+  return tournamentDate
 }
 
-const positions = ['offence', 'defence', 'transition', 'faceoff', 'goalie'] as const
-const handedness = ['left', 'right'] as const
-
-// Generate a random name
-function generatePlayerName(): { firstName: string; lastName: string } {
-  const firstName = playerNames.first[Math.floor(Math.random() * playerNames.first.length)]
-  const lastName = playerNames.last[Math.floor(Math.random() * playerNames.last.length)]
-  return { firstName, lastName }
-}
-
-// Generate game schedule for 8 teams (pool play format)
 function generateGameSchedule(teams: any[]): any[] {
   const games = []
-  let gameNumber = 1
+  const teamIdToDbId: { [key: string]: any } = {}
   
-  // Pool play: each team plays every other team once (28 games total)
-  // But we'll limit to 22 games as per tournament format
-  const gamesToGenerate = 22
+  // Create mapping from teamId to database ID
+  teams.forEach(team => {
+    teamIdToDbId[team.teamId] = team.id
+  })
   
-  // Generate pool play games
-  for (let i = 0; i < teams.length && games.length < gamesToGenerate - 2; i++) {
-    for (let j = i + 1; j < teams.length && games.length < gamesToGenerate - 2; j++) {
-      if (games.length >= gamesToGenerate - 2) break
-      
-      const day = Math.floor(games.length / 8) + 1 // 8 games per day roughly
-      const startTime = new Date('2024-07-05T09:00:00Z') // Tournament starts July 5th
-      startTime.setDate(startTime.getDate() + (day - 1))
-      startTime.setHours(9 + ((games.length % 8) * 1.5)) // Games every 1.5 hours
-      
-      games.push({
-        gameNumber: gameNumber.toString(),
-        gameType: 'pool',
-        day: Math.min(day, 3),
-        scheduledTime: startTime,
-        status: 'scheduled',
-        homeTeam: teams[i].id,
-        awayTeam: teams[j].id,
-        homeScore: 0,
-        awayScore: 0,
-        currentPeriod: 0,
-        periodTimeRemaining: 0,
-        gamePoints: { home: 0, away: 0 },
-        periodPoints: {
-          period1: { home: 0, away: 0 },
-          period2: { home: 0, away: 0 },
-          period3: { home: 0, away: 0 },
-        },
-        finalGamePoints: { home: 0, away: 0 },
-        periodLength: 12,
-        overtimeAllowed: false,
-      })
-      
-      gameNumber++
-    }
+  // Day 1 Pool Play Games
+  const day1Games = [
+    { gameNumber: 1, time: '12:00-12:45pm', team1: '1B', team2: '2B', team1Name: 'Honcho', team2Name: 'SASK Swat' },
+    { gameNumber: 2, time: '12:50-1:35pm', team1: '1G', team2: '2G', team1Name: 'Bombers', team2Name: 'Boston Orca' },
+    { gameNumber: 3, time: '1:40-2:25pm', team1: '1B', team2: '3B', team1Name: 'Honcho', team2Name: 'More Dudes' },
+    { gameNumber: 4, time: '2:30-3:15pm', team1: '3G', team2: '4G', team1Name: 'Bears', team2Name: 'Grizzlies' },
+    { gameNumber: 5, time: '4:30-5:15pm', team1: '1G', team2: '3G', team1Name: 'Bombers', team2Name: 'Bears' },
+    { gameNumber: 6, time: '4:35-5:20pm', team1: '2B', team2: '4B', team1Name: 'SASK Swat', team2Name: 'Mafia' },
+    { gameNumber: 7, time: '5:25-6:10pm', team1: '2G', team2: '4G', team1Name: 'Boston Orca', team2Name: 'Grizzlies' },
+    { gameNumber: 8, time: '6:15-7pm', team1: '3B', team2: '4B', team1Name: 'More Dudes', team2Name: 'Mafia' },
+  ]
+  
+  // Day 2 Pool Play and Playoffs
+  const day2Games = [
+    { gameNumber: 9, time: '12:00-12:45pm', team1: '2G', team2: '3G', team1Name: 'Boston Orca', team2Name: 'Bears' },
+    { gameNumber: 10, time: '12:50-1:35pm', team1: '2B', team2: '3B', team1Name: 'SASK Swat', team2Name: 'More Dudes' },
+    { gameNumber: 11, time: '1:40-2:25pm', team1: '1B', team2: '4B', team1Name: 'Honcho', team2Name: 'Mafia' },
+    { gameNumber: 12, time: '2:30-3:15pm', team1: '1G', team2: '4G', team1Name: 'Bombers', team2Name: 'Grizzlies' },
+    { gameNumber: 13, time: '4:10-4:55pm', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: 'Bronze vs 4th place' },
+    { gameNumber: 14, time: '5:05-5:50pm', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: 'Bronze vs 4th place' },
+    { gameNumber: 15, time: '5:55-6:40pm', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: 'Playoff game' },
+    { gameNumber: 16, time: '6:45-7:30pm', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: 'Playoff game' },
+  ]
+  
+  // Day 3 Medal Games
+  const day3Games = [
+    { gameNumber: 17, time: '10:00-10:45am', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: 'Bronze medal game' },
+    { gameNumber: 18, time: '10:50-11:35am', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: 'Playoff game' },
+    { gameNumber: 19, time: '11:40-12:25pm', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: '5th/6th place game' },
+    { gameNumber: 20, time: '12:30-1:15pm', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: '7th/8th place game' },
+    { gameNumber: 21, time: '1:50-2:35pm', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: 'Gold medal game' },
+    { gameNumber: 22, time: '3:00-4:00pm', team1: 'TBD', team2: 'TBD', team1Name: 'TBD', team2Name: 'TBD', description: 'Medal ceremony' },
+  ]
+  
+  const allGames = [
+    ...day1Games.map(g => ({ ...g, day: 1 })),
+    ...day2Games.map(g => ({ ...g, day: 2 })),
+    ...day3Games.map(g => ({ ...g, day: 3 })),
+  ]
+  
+  for (const gameData of allGames) {
+    const gameType = gameData.gameNumber >= 17 ? 'medal' : 'pool'
+    const periodLength = gameType === 'medal' ? 15 : 12
+    const overtimeAllowed = gameType === 'medal'
+    
+    // For TBD teams, use the first team as placeholder
+    const homeTeamId = gameData.team1 === 'TBD' ? teams[0].id : teamIdToDbId[gameData.team1]
+    const awayTeamId = gameData.team2 === 'TBD' ? teams[1].id : teamIdToDbId[gameData.team2]
+    
+    games.push({
+      gameNumber: gameData.gameNumber.toString(),
+      gameType,
+      day: gameData.day,
+      scheduledTime: parseTimeToDate(gameData.time, gameData.day),
+      status: 'scheduled',
+      homeTeam: homeTeamId,
+      awayTeam: awayTeamId,
+      homeScore: 0,
+      awayScore: 0,
+      currentPeriod: '0',
+      periodTimeRemaining: 0,
+      periodPoints: {
+        period1Home: 0,
+        period1Away: 0,
+        period2Home: 0,
+        period2Away: 0,
+        period3Home: 0,
+        period3Away: 0,
+        totalPeriodHome: 0,
+        totalPeriodAway: 0,
+      },
+      finalGamePoints: { home: 0, away: 0 },
+      totalGamePoints: { home: 0, away: 0 },
+      periodLength,
+      overtimeAllowed,
+      youtubeUrl: null,
+      threeStars: { first: null, second: null, third: null },
+    })
   }
-  
-  // Add medal games (final 2 games)
-  const medalGame1Time = new Date('2024-07-07T16:00:00Z')
-  const medalGame2Time = new Date('2024-07-07T18:00:00Z')
-  
-  games.push({
-    gameNumber: (gamesToGenerate - 1).toString(),
-    gameType: 'medal',
-    day: 3,
-    scheduledTime: medalGame1Time,
-    status: 'scheduled',
-    homeTeam: teams[0].id, // Will be determined by standings
-    awayTeam: teams[1].id,
-    homeScore: 0,
-    awayScore: 0,
-    currentPeriod: 0,
-    periodTimeRemaining: 0,
-    gamePoints: { home: 0, away: 0 },
-    periodPoints: {
-      period1: { home: 0, away: 0 },
-      period2: { home: 0, away: 0 },
-      period3: { home: 0, away: 0 },
-    },
-    finalGamePoints: { home: 0, away: 0 },
-    periodLength: 15,
-    overtimeAllowed: true,
-  })
-  
-  games.push({
-    gameNumber: gamesToGenerate.toString(),
-    gameType: 'medal',
-    day: 3,
-    scheduledTime: medalGame2Time,
-    status: 'scheduled',
-    homeTeam: teams[2].id,
-    awayTeam: teams[3].id,
-    homeScore: 0,
-    awayScore: 0,
-    currentPeriod: 0,
-    periodTimeRemaining: 0,
-    gamePoints: { home: 0, away: 0 },
-    periodPoints: {
-      period1: { home: 0, away: 0 },
-      period2: { home: 0, away: 0 },
-      period3: { home: 0, away: 0 },
-    },
-    finalGamePoints: { home: 0, away: 0 },
-    periodLength: 15,
-    overtimeAllowed: true,
-  })
   
   return games
 }
@@ -240,7 +1366,7 @@ export const seedTournament = async ({
   payload: Payload
   req: PayloadRequest
 }): Promise<void> => {
-  payload.logger.info('🏆 Seeding tournament data...')
+  payload.logger.info('🏆 Seeding Cowtown Showdown tournament data...')
   
   // Clear existing tournament data
   payload.logger.info('— Clearing existing tournament data...')
@@ -256,7 +1382,7 @@ export const seedTournament = async ({
   ])
   
   // Create teams
-  payload.logger.info('— Creating teams...')
+  payload.logger.info('— Creating tournament teams...')
   const createdTeams = await Promise.all(
     tournamentTeams.map(async (teamData) => {
       return await payload.create({
@@ -270,70 +1396,43 @@ export const seedTournament = async ({
     })
   )
   
-  // Create players for each team
-  payload.logger.info('— Creating players...')
-  const allPlayers = []
+  // Create team ID mapping for player assignment
+  const teamIdMap: { [key: string]: any } = {}
+  createdTeams.forEach(team => {
+    teamIdMap[team.teamId] = team.id
+  })
   
-  for (const team of createdTeams) {
-    const players = []
-    
-    // Create 2 goalies per team
-    for (let i = 0; i < 2; i++) {
-      const { firstName, lastName } = generatePlayerName()
-      const player = await payload.create({
+  // Create players
+  payload.logger.info('— Creating player rosters...')
+  const createdPlayers = await Promise.all(
+    tournamentPlayers.map(async (playerData) => {
+      const { teamId, ...playerFields } = playerData
+      return await payload.create({
         collection: 'players',
         data: {
-          firstName,
-          lastName,
-          jerseyNumber: i + 1, // Goalies get 1, 2
-          team: team.id,
-          primaryPosition: 'goalie',
-          handedness: handedness[Math.floor(Math.random() * handedness.length)],
-          playerType: 'goalie',
+          ...playerFields,
+          team: teamIdMap[teamId],
         },
         depth: 0,
         context: {
           disableRevalidate: true,
         },
       })
-      players.push(player)
-    }
-    
-    // Create 18 runners per team
-    for (let i = 0; i < 18; i++) {
-      const { firstName, lastName } = generatePlayerName()
-      const position = positions[Math.floor(Math.random() * (positions.length - 1))] // Exclude goalie
-      const player = await payload.create({
-        collection: 'players',
-        data: {
-          firstName,
-          lastName,
-          jerseyNumber: i + 3, // Runners get 3-20
-          team: team.id,
-          primaryPosition: position,
-          handedness: handedness[Math.floor(Math.random() * handedness.length)],
-          playerType: 'runner',
-        },
-        depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
-      })
-      players.push(player)
-    }
-    
-    allPlayers.push(...players)
-  }
+    })
+  )
   
   // Create game schedule
-  payload.logger.info('— Creating game schedule...')
+  payload.logger.info('— Creating tournament schedule...')
   const gameSchedule = generateGameSchedule(createdTeams)
   
   const createdGames = await Promise.all(
     gameSchedule.map(async (gameData) => {
       // Find starting goalies for each team
-      const homeGoalie = allPlayers.find(p => p.team === gameData.homeTeam && p.playerType === 'goalie')
-      const awayGoalie = allPlayers.find(p => p.team === gameData.awayTeam && p.playerType === 'goalie')
+      const homeGoalies = createdPlayers.filter(p => p.team === gameData.homeTeam && p.playerType === 'goalie')
+      const awayGoalies = createdPlayers.filter(p => p.team === gameData.awayTeam && p.playerType === 'goalie')
+      
+      const homeGoalie = homeGoalies[0]
+      const awayGoalie = awayGoalies[0]
       
       return await payload.create({
         collection: 'games',
@@ -352,129 +1451,9 @@ export const seedTournament = async ({
     })
   )
   
-  // Generate some sample statistics for a few completed games
-  payload.logger.info('— Generating sample game statistics...')
-  
-  // Mark first 3 games as completed with sample stats
-  const completedGames = createdGames.slice(0, 3)
-  
-  for (const game of completedGames) {
-    // Update game to final status with scores
-    const homeScore = Math.floor(Math.random() * 8) + 5 // 5-12 goals
-    const awayScore = Math.floor(Math.random() * 8) + 5
-    
-    await payload.update({
-      collection: 'games',
-      id: game.id,
-      data: {
-        status: 'final',
-        homeScore,
-        awayScore,
-        currentPeriod: 3,
-        gamePoints: {
-          home: homeScore > awayScore ? 3 : homeScore === awayScore ? 1 : 0,
-          away: awayScore > homeScore ? 3 : awayScore === homeScore ? 1 : 0,
-        },
-        finalGamePoints: {
-          home: homeScore > awayScore ? 2 : homeScore === awayScore ? 1 : 0,
-          away: awayScore > homeScore ? 2 : awayScore === homeScore ? 1 : 0,
-        },
-        periodPoints: {
-          period1: { home: 1, away: 0 },
-          period2: { home: 0, away: 1 },
-          period3: { home: homeScore > awayScore ? 1 : 0, away: awayScore > homeScore ? 1 : 0 },
-        },
-      },
-      depth: 0,
-      context: {
-        disableRevalidate: true,
-      },
-    })
-    
-    // Generate goals for this game
-    const homePlayers = allPlayers.filter(p => p.team === game.homeTeam && p.playerType === 'runner')
-    const awayPlayers = allPlayers.filter(p => p.team === game.awayTeam && p.playerType === 'runner')
-    
-    // Create goals for home team
-    for (let i = 0; i < homeScore; i++) {
-      const scorer = homePlayers[Math.floor(Math.random() * homePlayers.length)]
-      const period = Math.floor(Math.random() * 3) + 1
-      const time = `${Math.floor(Math.random() * 12)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`
-      
-      await payload.create({
-        collection: 'goals',
-        data: {
-          game: game.id,
-          period: period.toString(),
-          time,
-          scorer: scorer.id,
-          team: game.homeTeam,
-          goalType: 'even_strength',
-        },
-        depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
-      })
-    }
-    
-    // Create goals for away team
-    for (let i = 0; i < awayScore; i++) {
-      const scorer = awayPlayers[Math.floor(Math.random() * awayPlayers.length)]
-      const period = Math.floor(Math.random() * 3) + 1
-      const time = `${Math.floor(Math.random() * 12)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`
-      
-      await payload.create({
-        collection: 'goals',
-        data: {
-          game: game.id,
-          period: period.toString(),
-          time,
-          scorer: scorer.id,
-          team: game.awayTeam,
-          goalType: 'even_strength',
-        },
-        depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
-      })
-    }
-    
-    // Generate some penalties
-    const penaltyCount = Math.floor(Math.random() * 6) + 2 // 2-7 penalties per game
-    for (let i = 0; i < penaltyCount; i++) {
-      const allGamePlayers = [...homePlayers, ...awayPlayers]
-      const player = allGamePlayers[Math.floor(Math.random() * allGamePlayers.length)]
-      const period = Math.floor(Math.random() * 3) + 1
-      const time = `${Math.floor(Math.random() * 12)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`
-      
-      const infractions = ['slashing', 'tripping', 'interference', 'holding', 'cross_checking']
-      const infraction = infractions[Math.floor(Math.random() * infractions.length)]
-      
-      await payload.create({
-        collection: 'penalties',
-        data: {
-          game: game.id,
-          period: period.toString(),
-          time,
-          player: player.id,
-          team: player.team,
-          infraction,
-          duration: '2min',
-          penaltyType: 'minor',
-        },
-        depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
-      })
-    }
-  }
-  
-  payload.logger.info('🎉 Tournament seeding completed successfully!')
+  payload.logger.info('🎉 Cowtown Showdown seeding completed successfully!')
   payload.logger.info(`   • Created ${createdTeams.length} teams`)
-  payload.logger.info(`   • Created ${allPlayers.length} players`)
+  payload.logger.info(`   • Created ${createdPlayers.length} players`)
   payload.logger.info(`   • Created ${createdGames.length} games`)
-  payload.logger.info(`   • Generated statistics for ${completedGames.length} completed games`)
+  payload.logger.info('   • Ready for tournament action! 🥍')
 }

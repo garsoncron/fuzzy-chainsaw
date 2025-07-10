@@ -79,12 +79,12 @@ export const rateLimit = (config: RateLimitConfig) => {
 export const getSecurityHeaders = (): SecurityHeaders => ({
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://www.youtube-nocookie.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https:",
     "font-src 'self' data:",
     "connect-src 'self' https://api.payload.com",
-    "frame-src https://www.youtube.com",
+    "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

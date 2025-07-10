@@ -10,6 +10,27 @@ export const Footer: GlobalConfig = {
   },
   fields: [
     {
+      name: 'landAcknowledgment',
+      type: 'group',
+      fields: [
+        {
+          name: 'enabled',
+          type: 'checkbox',
+          defaultValue: true,
+          admin: {
+            description: 'Show/hide the land acknowledgment section',
+          },
+        },
+        {
+          name: 'text',
+          type: 'richText',
+          admin: {
+            description: 'Land acknowledgment text content',
+          },
+        },
+      ],
+    },
+    {
       name: 'navItems',
       type: 'array',
       fields: [

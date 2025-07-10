@@ -28,7 +28,7 @@ import {
 } from 'lucide-react'
 import type { Game, Team, Homepage } from '@/payload-types'
 import { SuperheroBannerBlock } from '@/blocks/SuperheroBanner/Component'
-import YouTubeEmbedBlock from '@/blocks/YouTubeEmbed/Component'
+import YouTubeEmbed from '@/blocks/YouTubeEmbed/Component'
 
 export type GameWithTeams = Game & {
   homeTeam: Team
@@ -184,7 +184,7 @@ export function TournamentHomepage({
                 {homepageSettings.liveStream.title}
               </h2>
             )}
-            <YouTubeEmbedBlock
+            <YouTubeEmbed
               url={homepageSettings.liveStream.youtubeUrl}
               title={homepageSettings.liveStream.title || 'Tournament Live Stream'}
               autoplay={homepageSettings.liveStream.autoplay}

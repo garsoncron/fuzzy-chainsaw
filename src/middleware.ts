@@ -48,7 +48,10 @@ export async function middleware(req: NextRequest) {
                              !pathname.startsWith('/api/users/logout') &&
                              !pathname.startsWith('/api/csrf') && // Exclude CSRF token endpoint
                              !pathname.startsWith('/api/games/') && // Exclude games endpoints from CSRF (they handle auth internally)
-                             !pathname.startsWith('/api/graphql') // Exclude GraphQL introspection
+                             !pathname.startsWith('/api/graphql') && // Exclude GraphQL introspection
+                             !pathname.startsWith('/api/globals/') && // Exclude Payload globals - Payload has its own CSRF protection
+                             !pathname.startsWith('/api/payload-preferences/') && // Exclude Payload preferences - Payload has its own CSRF protection
+                             !pathname.startsWith('/api/collections/') // Exclude Payload collections - Payload has its own CSRF protection
   
   if (isStateMutatingRequest && isAPIRequest && isProtectedEndpoint) {
     const csrfResponse = await csrfProtection(req)
