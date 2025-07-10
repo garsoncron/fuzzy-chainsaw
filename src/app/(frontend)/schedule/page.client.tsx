@@ -74,7 +74,7 @@ export function SchedulePage({
     // Filter by team
     if (filterTeam !== 'all') {
       filtered = filtered.filter(game => 
-        game.homeTeam?.id === filterTeam || game.awayTeam?.id === filterTeam
+        game.homeTeam?.id === Number(filterTeam) || game.awayTeam?.id === Number(filterTeam)
       )
     }
 

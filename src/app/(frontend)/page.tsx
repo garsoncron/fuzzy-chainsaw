@@ -50,7 +50,7 @@ export default async function HomePage() {
     )
     
     const upcomingGames = gamesResult.docs.filter(game => 
-      game.status === 'scheduled' && new Date(game.scheduledTime) > now
+      game.status === 'scheduled'
     ).slice(0, 6)
     
     const recentGames = gamesResult.docs.filter(game => {

@@ -10,6 +10,7 @@ import { post1 } from './post-1'
 import { post2 } from './post-2'
 import { post3 } from './post-3'
 import { seedTournament } from './tournament'
+import { headerSeedData } from '@/seed-data/header'
 
 const collections: CollectionSlug[] = [
   'categories',
@@ -51,8 +52,28 @@ export const seed = async ({
 
   // clear the database
   await Promise.all(
-    globals.map((global) =>
-      payload.updateGlobal({
+    globals.map((global) => {
+      if (global === 'header') {
+        return payload.updateGlobal({
+          slug: global,
+          data: {
+            ...headerSeedData,
+            cta: {
+              ctaText: 'Tournament',
+              link: {
+                type: 'custom',
+                url: '/tournament',
+                label: 'Tournament',
+              },
+            },
+          },
+          depth: 0,
+          context: {
+            disableRevalidate: true,
+          },
+        })
+      }
+      return payload.updateGlobal({
         slug: global,
         data: {
           navItems: [],
@@ -61,8 +82,8 @@ export const seed = async ({
         context: {
           disableRevalidate: true,
         },
-      }),
-    ),
+      })
+    }),
   )
 
   await Promise.all(
@@ -295,6 +316,18 @@ export const seed = async ({
     payload.updateGlobal({
       slug: 'header',
       data: {
+        ...headerSeedData,
+        cta: {
+          ctaText: 'View Schedule',
+          link: {
+            type: 'reference',
+            reference: {
+              relationTo: 'pages',
+              value: contactPage.id,
+            },
+            label: 'View Schedule',
+          },
+        },
         navItems: [
           {
             link: {

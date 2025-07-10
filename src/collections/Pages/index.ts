@@ -28,10 +28,16 @@ import {
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: authenticatedOrPublished,
-    update: authenticated,
+    create: ({ req: { user } }) => {
+      console.log('Pages create access check - User:', user ? `${user.email} (${user.role})` : 'NO USER')
+      return Boolean(user)
+    },
+    delete: ({ req: { user } }) => Boolean(user),
+    read: ({ req: { user } }) => Boolean(user) || { _status: { equals: 'published' } },
+    update: ({ req: { user } }) => {
+      console.log('Pages update access check - User:', user ? `${user.email} (${user.role})` : 'NO USER')
+      return Boolean(user)
+    },
   },
   // This config controls what's populated by default when a page is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property

@@ -169,4 +169,4 @@ export const YouTubeEmbed: React.FC<Props> = (props) => {
   )
 }
 
-export default YouTubeEmbedBlock
+export default YouTubeEmbed

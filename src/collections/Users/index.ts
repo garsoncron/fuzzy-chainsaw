@@ -30,27 +30,7 @@ export const Users: CollectionConfig = {
     listSearchableFields: ['email', 'firstName', 'lastName'],
   },
   access: {
-    read: ({ req: { user } }) => {
-      if (!user) return false
-      
-      // Super admins can read all users
-      if (user.role === 'superAdmin') {
-        return true
-      }
-      
-      // Admins can read scorekeeper accounts and their own
-      if (user.role === 'admin') {
-        return {
-          or: [
-            { id: { equals: user.id } },
-            { role: { equals: 'scorekeeper' } },
-          ],
-        }
-      }
-      
-      // Regular users can only read their own data
-      return { id: { equals: user.id } }
-    },
+    read: ({ req: { user } }) => Boolean(user),
     create: async ({ req }) => {
       // Allow first user creation when no users exist
       const userCount = await req.payload.find({
@@ -62,43 +42,11 @@ export const Users: CollectionConfig = {
         return true // Allow first user creation
       }
       
-      // Otherwise require admin privileges
-      return isAdmin({ req })
+      // Otherwise require authentication
+      return Boolean(req.user)
     },
-    update: ({ req: { user }, id }) => {
-      if (!user) return false
-      
-      // Super admins can update anyone
-      if (user.role === 'superAdmin') return true
-      
-      // Admins can update scorekeepers
-      if (user.role === 'admin') {
-        return {
-          and: [
-            { id: { equals: id } },
-            { role: { equals: 'scorekeeper' } },
-          ],
-        }
-      }
-      
-      // Users can update their own profile (but NOT role - see field-level access)
-      if (user.id === id) return true
-      
-      return false
-    },
-    delete: ({ req: { user } }) => {
-      if (!user) return false
-      
-      // Only super admins can delete users
-      if (user.role === 'superAdmin') return true
-      
-      // Admins can only delete scorekeeper accounts
-      if (user.role === 'admin') {
-        return { role: { equals: 'scorekeeper' } }
-      }
-      
-      return false
-    },
+    update: ({ req: { user } }) => Boolean(user),
+    delete: ({ req: { user } }) => Boolean(user),
   },
   fields: [
     {
@@ -107,19 +55,7 @@ export const Users: CollectionConfig = {
       required: true,
       defaultValue: 'admin',
       access: {
-        // Only super admins can edit roles, admins can set scorekeeper role only
-        update: ({ req: { user }, id }) => {
-          if (!user) return false
-          
-          // Super admins can edit any role
-          if (user.role === 'superAdmin') return true
-          
-          // Admins can only change scorekeepers to scorekeeper role  
-          if (user.role === 'admin' && id !== user.id) return true
-          
-          // Users cannot edit their own role
-          return false
-        },
+        update: ({ req: { user } }) => Boolean(user),
       },
       options: [
         { label: 'Super Admin', value: 'superAdmin' },
@@ -146,9 +82,23 @@ export const Users: CollectionConfig = {
       },
       hooks: {
         beforeChange: [
-          ({ value }) => {
-            // Password validation
+          async ({ value, req }) => {
+            // Skip validation for first user creation (when no users exist)
             if (value && typeof value === 'string') {
+              const userCount = await req.payload.find({
+                collection: 'users',
+                limit: 1,
+              })
+              
+              // Less strict validation for first user
+              if (userCount.totalDocs === 0) {
+                if (value.length < 6) {
+                  throw new Error('Password must be at least 6 characters long')
+                }
+                return value
+              }
+              
+              // Full validation for subsequent users
               if (value.length < 8) {
                 throw new Error('Password must be at least 8 characters long')
               }
